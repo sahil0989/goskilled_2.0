@@ -46,7 +46,7 @@ const UserDashboard = () => {
     const fetchWalletData = async () => {
       setWalletLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/wallet/details/${user?._id}`);
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
         setWallet(res.data.wallet || { balance: 0, totalEarned: 0 });
         setRedeemHistory(Array.isArray(res.data.history) ? res.data.history : []);
       } catch (err) {
@@ -78,8 +78,8 @@ const UserDashboard = () => {
     }
 
     try {
-      await axios.post(`http://localhost:5000/api/wallet/withdraw/${user?._id}`, { amount });
-      const res = await axios.get(`http://localhost:5000/api/wallet/details/${user?._id}`);
+      await axios.post(`${process.env.REACT_APP_BACKEND}/api/wallet/withdraw/${user?._id}`, { amount });
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
       setWallet(res.data.wallet);
       setRedeemHistory(res.data.history);
       if (onSuccess) onSuccess();
