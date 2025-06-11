@@ -92,7 +92,7 @@ const RegisterComponent = () => {
   // Optimize timer logic using useEffect
   useEffect(() => {
     let intervalId;
-    if (phoneData.otpSent && phoneData.timer > 0) {
+    if (phoneData?.otpSent && phoneData?.timer > 0) {
       intervalId = setInterval(() => {
         setPhoneData((prev) => {
           const newTimer = prev.timer - 1;
@@ -108,7 +108,7 @@ const RegisterComponent = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [phoneData.otpSent, phoneData.timer]);
+  }, [phoneData?.otpSent, phoneData?.timer]);
 
   const handleRegister = async (data) => {
     setError("");
@@ -121,10 +121,10 @@ const RegisterComponent = () => {
         data
       );
 
-      setSuccess(response.data.message);
+      setSuccess(response?.data?.message);
       updatePhoneData({
         otpSent: true,
-        mobileNumber: data.mobileNumber,
+        mobileNumber: data?.mobileNumber,
         timer: 60,
         canResend: false,
       });
@@ -142,11 +142,11 @@ const RegisterComponent = () => {
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND}/api/auth/request-login-otp`,
         {
-          mobileNumber: phoneData.mobileNumber,
+          mobileNumber: phoneData?.mobileNumber,
         }
       );
-      setSuccess(response.data.message);
-      toast.info(`OTP send on ${phoneData.mobileNumber}`);
+      setSuccess(response?.data?.message);
+      toast.info(`OTP send on ${phoneData?.mobileNumber}`);
       updatePhoneData({
         otpSent: true,
         timer: 60,
@@ -161,16 +161,16 @@ const RegisterComponent = () => {
   const handleVerifyOTP = async () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND}/api/auth/verify-otp`, {
-        mobileNumber: phoneData.mobileNumber,
-        otp: phoneData.otp,
+        mobileNumber: phoneData?.mobileNumber,
+        otp: phoneData?.otp,
       });
-      setSuccess(response.data.message);
+      setSuccess(response?.data?.message);
 
 
-      localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("token", response?.data?.data?.token);
 
-      setUser(response.data.data.user);
-      login(response.data.data.user._id)
+      setUser(response?.data?.data?.user);
+      login(response?.data?.data?.user?._id)
 
       toast.success('Verification Successfully!!')
       navigate("/dashboard");
@@ -222,12 +222,12 @@ const RegisterComponent = () => {
                         {...field}
                         id="name"
                         placeholder="John Doe"
-                        className={errors.name ? "border-red-500" : ""}
+                        className={errors?.name ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.name && (
-                    <p className="text-sm text-red-500">{errors.name}</p>
+                  {errors?.name && (
+                    <p className="text-sm text-red-500">{errors?.name}</p>
                   )}
                 </div>
 
@@ -242,12 +242,12 @@ const RegisterComponent = () => {
                         id="email"
                         type="email"
                         placeholder="john.doe@example.com"
-                        className={errors.email ? "border-red-500" : ""}
+                        className={errors?.email ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-red-500">{errors.email.message}</p>
+                  {errors?.email && (
+                    <p className="text-sm text-red-500">{errors?.email?.message}</p>
                   )}
                 </div>
 
@@ -264,13 +264,13 @@ const RegisterComponent = () => {
                         placeholder="1234567898"
                         pattern="^[6-9]\d{9}$"
                         title="Enter a valid 10-digit WhatsApp number starting with 6-9"
-                        className={errors.mobileNumber ? "border-red-500" : ""}
+                        className={errors?.mobileNumber ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.mobileNumber && (
+                  {errors?.mobileNumber && (
                     <p className="text-sm text-red-500">
-                      {errors.mobileNumber.message}
+                      {errors?.mobileNumber?.message}
                     </p>
                   )}
                 </div>
@@ -285,13 +285,13 @@ const RegisterComponent = () => {
                         {...field}
                         id="password"
                         type="password"
-                        className={errors.password ? "border-red-500" : ""}
+                        className={errors?.password ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.password && (
+                  {errors?.password && (
                     <p className="text-sm text-red-500">
-                      {errors.password.message}
+                      {errors?.password?.message}
                     </p>
                   )}
                 </div>
@@ -306,13 +306,13 @@ const RegisterComponent = () => {
                         {...field}
                         id="confirmPassword"
                         type="password"
-                        className={errors.confirmPassword ? "border-red-500" : ""}
+                        className={errors?.confirmPassword ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.confirmPassword && (
+                  {errors?.confirmPassword && (
                     <p className="text-sm text-red-500">
-                      {errors.confirmPassword.message}
+                      {errors?.confirmPassword?.message}
                     </p>
                   )}
                 </div>
@@ -327,13 +327,13 @@ const RegisterComponent = () => {
                         {...field}
                         id="referralCode"
                         type="text"
-                        className={errors.referralCode ? "border-red-500" : ""}
+                        className={errors?.referralCode ? "border-red-500" : ""}
                       />
                     )}
                   />
-                  {errors.referralCode && (
+                  {errors?.referralCode && (
                     <p className="text-sm text-red-500">
-                      {errors.referralCode.message}
+                      {errors?.referralCode?.message}
                     </p>
                   )}
                 </div>
@@ -370,7 +370,7 @@ const RegisterComponent = () => {
                   name="mobileNumber"
                   type="number"
                   disabled
-                  value={phoneData.mobileNumber}
+                  value={phoneData?.mobileNumber}
                   onChange={handlePhoneChange}
                   required
                 />
@@ -393,13 +393,13 @@ const RegisterComponent = () => {
 
               {phoneData.timer > 0 ? (
                 <p className="w-full text-center">
-                  Resend OTP in {phoneData.timer} seconds
+                  Resend OTP in {phoneData?.timer} seconds
                 </p>
               ) : (
                 <Button
                   className="w-full"
                   onClick={handleSendOTP}
-                  disabled={!phoneData.canResend}
+                  disabled={!phoneData?.canResend}
                 >
                   Resend OTP
                 </Button>

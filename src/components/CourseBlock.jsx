@@ -6,7 +6,7 @@ export default function CourseBlock({ data }) {
     return (
         <div className='w-72 shadow-sm bg-white pb-3 rounded-lg'>
             <div className=''>
-                <img src={data.imgUrl} className='w-full h-40 object-cover rounded-t-lg' alt='' />
+                <img src={data?.imgUrl} className='w-full h-40 object-cover rounded-t-lg' alt='' />
             </div>
             <div className='pl-2 pt-2'>
                 <h2 className='font-bold line-clamp-2'>{data.title}</h2>

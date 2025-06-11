@@ -206,11 +206,11 @@ export default function UserKYCDetails({ user, handleVerifyKYC }) {
 
           <div className="space-y-2">
             <Label htmlFor="addressDocUpload">Upload Address Document:</Label>
-            {addressDocUpload.loading && !addressDocUpload.url ? (
+            {addressDocUpload?.loading && !addressDocUpload?.url ? (
               <div className='border rounded-md px-4 py-1 font-semibold'>Uploading...</div>
-            ) : addressDocUpload.url ? (
+            ) : addressDocUpload?.url ? (
               <div className='flex gap-4 items-center border rounded-md'>
-                <Button type="button" variant="link" onClick={() => openModal(addressDocUpload.url)}>View Document</Button>
+                <Button type="button" variant="link" onClick={() => openModal(addressDocUpload?.url)}>View Document</Button>
                 <Button disabled={isReadOnly} type="button" onClick={() => handleReplaceDocFunc(addressDocUpload)} size="sm" className="px-2 py-1 font-normal">Replace</Button>
               </div>
             ) : (
@@ -231,11 +231,11 @@ export default function UserKYCDetails({ user, handleVerifyKYC }) {
         <div className='grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-6'>
           <div className="space-y-2">
             <Label htmlFor="panUpload">Upload PAN Card:</Label>
-            {panUpload?.loading && !panUpload.url ? (
+            {panUpload?.loading && !panUpload?.url ? (
               <div className='border rounded-md px-4 py-1 font-semibold'>Uploading...</div>
-            ) : panUpload.url ? (
+            ) : panUpload?.url ? (
               <div className='flex gap-4 items-center border rounded-md'>
-                <Button type="button" variant="link" onClick={() => openModal(panUpload.url)}>View Document</Button>
+                <Button type="button" variant="link" onClick={() => openModal(panUpload?.url)}>View Document</Button>
                 <Button disabled={isReadOnly} type="button" onClick={() => handleReplaceDocFunc(panUpload)} size="sm" className="px-2 py-1 font-normal">Replace</Button>
               </div>
             ) : (

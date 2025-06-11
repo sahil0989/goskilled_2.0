@@ -11,7 +11,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
       }
 
       const url = await generateReferralLink(params)
-      await navigator.clipboard.writeText(url)
+      await navigator?.clipboard?.writeText(url)
       toast.success("Referral-Code Copied Successfully!!")
     } catch (err) {
       console.error('Failed to copy: ', err)
@@ -83,7 +83,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
           {isLoading ? (
             <div className={`${skeletonBox} h-8 w-2/3`}></div>
           ) : (
-            <div className='font-normal'>Total Referred Users: <span className='font-bold text-2xl pl-2'>{referrals?.level1.length}</span></div>
+            <div className='font-normal'>Total Referred Users: <span className='font-bold text-2xl pl-2'>{referrals?.level1?.length}</span></div>
           )}
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
             <div>
               <h2 className="text-gray-600 text-lg mb-2">Wallet Balance</h2>
               <br />
-              <p className="text-4xl font-bold">₹ {user?.wallet?.balance.toFixed(2)}</p>
+              <p className="text-4xl font-bold">₹ {user?.wallet?.balance?.toFixed(2)}</p>
               <br className='hidden md:block' />
               <button onClick={() => setActiveTab('Wallet')} className='bg-[#1a4d10] px-8 py-3 rounded-lg shadow-md text-white font-semibold'>Redeem</button>
             </div>

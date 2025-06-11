@@ -67,16 +67,16 @@ const LoginComponent = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      const data = response.data;
+      const data = response?.data;
 
-      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("token", data?.data?.token);
       console.log("Data: ", data);
-      setUser(data.data.user);
-      login(data.data.user._id);
+      setUser(data?.data?.user);
+      login(data?.data?.user?._id);
       toast.success("Login Successfully!!");
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      toast.error(error?.response?.data?.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +97,7 @@ const LoginComponent = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      const data = response.data;
+      const data = response?.data;
 
       toast.info(`OTP sent to ${mobileNumber}`);
       setUserId(data?.data?.userId);
@@ -114,7 +114,7 @@ const LoginComponent = () => {
         });
       }, 1000);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send OTP");
+      toast.error(error?.response?.data?.message || "Failed to send OTP");
     } finally {
       setIsLoading(false);
     }
@@ -132,15 +132,15 @@ const LoginComponent = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      const data = response.data;
+      const data = response?.data;
 
-      localStorage.setItem("token", data.data.token);
-      setUser(data.data.user);
-      login(data.data.user._id);
+      localStorage.setItem("token", data?.data?.token);
+      setUser(data?.data?.user);
+      login(data?.data?.user?._id);
       toast.success("Login Successfully!!");
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.response?.data?.message || "OTP verification failed");
+      toast.error(error?.response?.data?.message || "OTP verification failed");
     } finally {
       setIsLoading(false);
     }
@@ -175,7 +175,7 @@ const LoginComponent = () => {
         });
       }, 1000);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP");
+      toast.error(error?.response?.data?.message || "Failed to resend OTP");
     } finally {
       setIsLoading(false);
     }

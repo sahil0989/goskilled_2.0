@@ -15,8 +15,8 @@ export default function UserReferrals({ referrals, username }) {
     };
 
     const sortedData = getLevelData().sort((a, b) => {
-        const dateA = new Date(parseInt(a._id.substring(0, 8), 16) * 1000);
-        const dateB = new Date(parseInt(b._id.substring(0, 8), 16) * 1000);
+        const dateA = new Date(parseInt(a?._id.substring(0, 8), 16) * 1000);
+        const dateB = new Date(parseInt(b?._id.substring(0, 8), 16) * 1000);
         return sortAsc ? dateA - dateB : dateB - dateA;
     });
 
@@ -25,7 +25,7 @@ export default function UserReferrals({ referrals, username }) {
         currentPage * itemsPerPage
     );
 
-    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+    const totalPages = Math.ceil(sortedData?.length / itemsPerPage);
 
     const convertToCSV = (data) => {
         let headers = [];
@@ -33,27 +33,27 @@ export default function UserReferrals({ referrals, username }) {
 
         if (activeTab === 'Level 1') {
             headers = ['Name', 'Email', 'Phone', 'Unique Code'];
-            rows = data.map(item => [
-                item.name,
-                item.email,
-                item.mobileNumber,
-                item._id,
+            rows = data?.map(item => [
+                item?.name,
+                item?.email,
+                item?.mobileNumber,
+                item?._id,
             ]);
         } else {
             headers = ['Name', 'Email', 'Referred By'];
-            rows = data.map(item => [
-                item.name,
-                item.email,
-                item.referredBy?.name || '-',
+            rows = data?.map(item => [
+                item?.name,
+                item?.email,
+                item?.referredBy?.name || '-',
             ]);
         }
 
         const csvContent =
             [headers, ...rows]
-                .map(row =>
+                ?.map(row =>
                     row
-                        .map(field => `"${String(field).replace(/"/g, '""')}"`)
-                        .join(',')
+                        ?.map(field => `"${String(field)?.replace(/"/g, '""')}"`)
+                        ?.join(',')
                 )
                 .join('\r\n');
 
@@ -63,7 +63,7 @@ export default function UserReferrals({ referrals, username }) {
     const downloadCSV = () => {
         const csv = convertToCSV(sortedData);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
+        const url = URL?.createObjectURL(blob);
 
         const link = document.createElement('a');
         link.href = url;
@@ -103,17 +103,17 @@ export default function UserReferrals({ referrals, username }) {
     };
 
     const renderTableBody = () => {
-        return paginatedData.map((item) => (
-            <tr key={item._id} className="border-t">
-                <td className="p-2 text-sm">{item.name}</td>
-                <td className="p-2 text-sm">{item.email}</td>
+        return paginatedData?.map((item) => (
+            <tr key={item?._id} className="border-t">
+                <td className="p-2 text-sm">{item?.name}</td>
+                <td className="p-2 text-sm">{item?.email}</td>
                 {activeTab === 'Level 1' ? (
                     <>
-                        <td className="p-2 text-sm">{item.mobileNumber}</td>
-                        <td className="p-2 text-sm">{item._id}</td>
+                        <td className="p-2 text-sm">{item?.mobileNumber}</td>
+                        <td className="p-2 text-sm">{item?._id}</td>
                     </>
                 ) : (
-                    <td className="p-2 text-sm">{item.referredBy?.name || '-'}</td>
+                    <td className="p-2 text-sm">{item?.referredBy?.name || '-'}</td>
                 )}
             </tr>
         ));
@@ -128,7 +128,7 @@ export default function UserReferrals({ referrals, username }) {
             {/* Tabs and controls */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4">
                 <div className="flex flex-wrap gap-2">
-                    {tabs.map((tab) => (
+                    {tabs?.map((tab) => (
                         <button
                             key={tab}
                             onClick={() => {

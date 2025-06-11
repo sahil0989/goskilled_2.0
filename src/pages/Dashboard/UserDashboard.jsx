@@ -47,8 +47,8 @@ const UserDashboard = () => {
       setWalletLoading(true);
       try {
         const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
-        setWallet(res.data.wallet || { balance: 0, totalEarned: 0 });
-        setRedeemHistory(Array.isArray(res.data.history) ? res.data.history : []);
+        setWallet(res?.data?.wallet || { balance: 0, totalEarned: 0 });
+        setRedeemHistory(Array?.isArray(res?.data?.history) ? res?.data?.history : []);
       } catch (err) {
         toast.error('Failed to load wallet data.');
       } finally {
@@ -65,9 +65,7 @@ const UserDashboard = () => {
     if(response?.success) {
       await getUserData();
       setActiveTab('Dashboard');
-      console.log("Got it");
     }
-    console.log("response: ", response);
   };
 
   // userWallet
@@ -80,8 +78,8 @@ const UserDashboard = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND}/api/wallet/withdraw/${user?._id}`, { amount });
       const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
-      setWallet(res.data.wallet);
-      setRedeemHistory(res.data.history);
+      setWallet(res?.data?.wallet);
+      setRedeemHistory(res?.data?.history);
       if (onSuccess) onSuccess();
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "Redeem Failed";
@@ -108,15 +106,15 @@ const UserDashboard = () => {
         </div>
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
-            {menuItems.map((item) => (
-              <li key={item.name}>
+            {menuItems?.map((item) => (
+              <li key={item?.name}>
                 <button
-                  onClick={() => setActiveTab(item.name)}
-                  className={`w-full flex items-center justify-center md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item.name ? 'bg-[#1a4d10]/90 text-white' : 'hover:bg-[#1a4d10] hover:text-white'
+                  onClick={() => setActiveTab(item?.name)}
+                  className={`w-full flex items-center justify-center md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item?.name ? 'bg-[#1a4d10]/90 text-white' : 'hover:bg-[#1a4d10] hover:text-white'
                     }`}
                 >
-                  <span>{item.icon}</span>
-                  <span className='hidden md:block'>{item.name}</span>
+                  <span>{item?.icon}</span>
+                  <span className='hidden md:block'>{item?.name}</span>
                 </button>
               </li>
             ))}
@@ -133,20 +131,20 @@ const UserDashboard = () => {
         </div>
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
-            {menuItems.map((item) => (
-              <li key={item.name} className='text-sm'>
+            {menuItems?.map((item) => (
+              <li key={item?.name} className='text-sm'>
                 <button
                   onClick={() => {
-                    setActiveTab(item.name);
+                    setActiveTab(item?.name);
                     setUserDashboardSidebar(false);
                   }}
-                  className={`w-full flex items-center flex-nowrap md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item.name
+                  className={`w-full flex items-center flex-nowrap md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item?.name
                     ? 'bg-[#1a4d10]/90 text-white'
                     : 'hover:bg-[#1a4d10] hover:text-white'
                     }`}
                 >
-                  <span>{item.icon}</span>
-                  <span className="">{item.name}</span>
+                  <span>{item?.icon}</span>
+                  <span>{item?.name}</span>
                 </button>
               </li>
             ))}

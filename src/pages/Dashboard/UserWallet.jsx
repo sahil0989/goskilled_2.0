@@ -35,7 +35,7 @@ function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
             style: 'currency',
             currency: 'INR',
             maximumFractionDigits: 2,
-        }).format(value);
+        })?.format(value);
 
     return (
         <div className="max-w-4xl mx-auto p-4">
@@ -120,7 +120,7 @@ function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
                         </thead>
                         <tbody>
                             {loading ? (
-                                Array(3).fill(0).map((_, i) => (
+                                Array(3)?.fill(0)?.map((_, i) => (
                                     <tr key={i} className="border-t">
                                         <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
                                         <td className="p-3"><SkeletonBox height="h-4" width="w-20" /></td>
@@ -128,33 +128,33 @@ function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
                                         <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
                                     </tr>
                                 ))
-                            ) : redeemHistory.length === 0 ? (
+                            ) : redeemHistory?.length === 0 ? (
                                 <tr>
                                     <td className="p-3 text-gray-500" colSpan="4">
                                         No history found.
                                     </td>
                                 </tr>
                             ) : (
-                                redeemHistory.map((entry, index) => (
+                                redeemHistory?.map((entry, index) => (
                                     <tr key={index} className="border-t hover:bg-gray-50">
-                                        <td className="p-3 whitespace-nowrap">₹ {entry.amount}</td>
+                                        <td className="p-3 whitespace-nowrap">₹ {entry?.amount}</td>
                                         <td className="p-3 whitespace-nowrap">
                                             <span
-                                                className={`px-2 py-1 rounded text-xs font-semibold ${entry.status === 'Applied'
+                                                className={`px-2 py-1 rounded text-xs font-semibold ${entry?.status === 'Applied'
                                                     ? 'bg-yellow-100 text-yellow-800'
                                                     : entry.status === 'Paid'
                                                         ? 'bg-green-100 text-green-800'
                                                         : 'bg-gray-200 text-gray-600'
                                                     }`}
                                             >
-                                                {entry.status}
+                                                {entry?.status}
                                             </span>
                                         </td>
                                         <td className="p-3 whitespace-nowrap">
                                             {new Date(entry.requestedAt).toLocaleString()}
                                         </td>
                                         <td className="p-3 whitespace-nowrap">
-                                            {entry.processedAt ? new Date(entry.processedAt).toLocaleString() : '—'}
+                                            {entry?.processedAt ? new Date(entry?.processedAt)?.toLocaleString() : '—'}
                                         </td>
                                     </tr>
                                 ))
