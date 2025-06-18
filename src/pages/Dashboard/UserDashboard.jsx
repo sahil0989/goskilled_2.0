@@ -4,65 +4,62 @@ import UserDetails from './UserDetails';
 import UserCourses from './userCourses';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { submitKYCDetails } from '../../api/ApiCall';
+import { fetchLeaderboardData, fetchReferredUser, submitKYCDetails } from '../../api/ApiCall';
 import UserLeaderboard from './UserLeaderboard';
 import UserReferrals from './UserReferrals';
 import UserWallet from './UserWallet';
 import axios from 'axios';
 import { toast } from 'sonner';
+import MeetingPage from '../meetings/MeetingPage';
 
 const UserDashboard = () => {
 
-  const { user, getUserData, referrals, leaderboard, userDashboardSidebar, setUserDashboardSidebar } = useAuth()
-  const [currentUser] = useState(null)
+  const { user, getUserData, userDashboardSidebar, setUserDashboardSidebar, getLeaderboard } = useAuth()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [kycVerified, setKycVerified] = useState(false);
-  const [wallet, setWallet] = useState({ balance: 0, totalEarned: 0 });
   const [redeemHistory, setRedeemHistory] = useState([]);
-  const [walletLoading, setWalletLoading] = useState(true);
-  // eslint-disable-next-line
-  const [loading, setLoading] = useState(false);
-  // eslint-disable-next-line
-  const [progressPercentage, setProgressPercentage] = useState(0);
-  // eslint-disable-next-line
-  const [walletBalance, setWalletBalance] = useState(0);
-  // eslint-disable-next-line
-  const [transactions, setTransactions] = useState([]);
+  const [leaderboard, setLeaderboard] = useState(null);
+  const [referredUser, setReferredUser] = useState(null);
 
   useEffect(() => {
-    const handleLogin = () => {
+    const handleLogin = async () => {
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
         navigate("/auth/login")
+      } else {
+        const id = JSON.parse(storedUser);
+        const data = await fetchReferredUser(id);
+        const leaderData = await fetchLeaderboardData();
+        setReferredUser(data)
+        setLeaderboard(leaderData);
       }
     }
     handleLogin()
-  }, [user, navigate, currentUser]);
+    // eslint-disable-next-line
+  }, [user, navigate]);
 
   //userWallet
   useEffect(() => {
     const fetchWalletData = async () => {
-      setWalletLoading(true);
       try {
+        await getLeaderboard();
         const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
-        setWallet(res?.data?.wallet || { balance: 0, totalEarned: 0 });
         setRedeemHistory(Array?.isArray(res?.data?.history) ? res?.data?.history : []);
       } catch (err) {
         toast.error('Failed to load wallet data.');
-      } finally {
-        setWalletLoading(false);
       }
     };
 
     if (user?._id) fetchWalletData();
+    // eslint-disable-next-line
   }, [user]);
 
   const handleVerifyKYC = async (data) => {
     setKycVerified(true);
     const response = await submitKYCDetails(data);
-    if(response?.success) {
+    if (response?.success) {
       await getUserData();
       setActiveTab('Dashboard');
     }
@@ -78,7 +75,6 @@ const UserDashboard = () => {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND}/api/wallet/withdraw/${user?._id}`, { amount });
       const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
-      setWallet(res?.data?.wallet);
       setRedeemHistory(res?.data?.history);
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -92,7 +88,8 @@ const UserDashboard = () => {
     { name: 'Dashboard', icon: '🏠' },
     { name: 'Referrals', icon: '👥' },
     { name: 'Wallet', icon: '🪙' },
-    { name: 'Leaderboard', icon: `📊` },
+    { name: 'Our Meetings', icon: '📅' },
+    { name: 'Leaderboard', icon: '📊' },
     { name: 'Courses', icon: '📚' },
     { name: 'KYC Verification', icon: '🆔' },
   ];
@@ -154,23 +151,24 @@ const UserDashboard = () => {
 
       {/* Main Content */}
       <main className="flex-1 h-[calc(100vh-80px)] overflow-scroll p-4 md:p-6">
-        <h1 className="text-3xl font-bold mb-6 uppercase">{activeTab}</h1>
+        <h1 className="text-3xl font-bold mb-6 capitalize">{activeTab}</h1>
 
-        {activeTab === 'Dashboard' && <UserDetails user={user} referrals={referrals?.referrals} walletBalance={walletBalance} kycVerified={kycVerified} setActiveTab={setActiveTab} />}
+        {activeTab === 'Dashboard' && <UserDetails user={user} kycVerified={kycVerified} setActiveTab={setActiveTab} />}
 
         {activeTab === 'Courses' && (<UserCourses />)}
 
         {activeTab === 'Wallet' && (
           <UserWallet
             user={user}
-            wallet={wallet}
+            wallet={user?.wallet}
             redeemHistory={redeemHistory}
-            loading={walletLoading}
             handleRedeem={handleRedeem}
           />
         )}
 
-        {activeTab === 'Referrals' && (<UserReferrals referrals={referrals?.referrals} username={user?.name} />)}
+        {activeTab === 'Referrals' && (<UserReferrals referrals={referredUser?.referrals} username={user?.name} />)}
+
+        {activeTab === 'Our Meetings' && <MeetingPage userId={user?._id} />}
 
         {activeTab === 'Leaderboard' && (<UserLeaderboard currentUser={user} users={leaderboard?.data} />)}
 

@@ -43,8 +43,8 @@ export default function UserLeaderboard({ users, currentUser }) {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-4 py-2 rounded-lg transition duration-300 w-full mx-2 ${activeTab === tab
-                                        ? 'bg-white text-green-800 font-bold'
-                                        : 'text-white'
+                                    ? 'bg-white text-green-800 font-bold'
+                                    : 'text-white'
                                     }`}
                             >
                                 {tab}

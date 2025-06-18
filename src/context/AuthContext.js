@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { fetchLeaderboardData, fetchReferredUser, getUserDetails } from "../api/ApiCall";
+import { fetchLeaderboardData, getUserDetails } from "../api/ApiCall";
 import { toast } from "sonner";
 
 export const logoutHelper = () => {
@@ -28,9 +28,8 @@ export const AuthProvider = ({ children }) => {
             logout();
             return;
           }
+          await getUserData();
 
-          getUserData();
-          getReferredUserDetails();
         } catch (err) {
           logout();
         }
@@ -38,41 +37,51 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    console.log("Referrals updated:", referrals);
+  }, [referrals]);
+
 
   const getUserData = async () => {
     setAuthLoading(true);
     const response = await getUserDetails();
 
     if (response && response.success) {
+      console.log('User....')
       setUser(response.data.user);
     }
     setAuthLoading(false);
-    const data = await fetchLeaderboardData();
-
-    setLeaderboard(data);
+    await getLeaderboard();
   }
 
-  const getReferredUserDetails = async () => {
-    try {
-      const response = await fetchReferredUser();
-      setReferrals(response);
-    } catch (err) {
-      toast.error(err.message);
+  const getLeaderboard = async () => {
+    const data = await fetchLeaderboardData();
+    if (data?.success) {
+      setLeaderboard(data?.data);
     }
   }
 
-  const login = (userData) => {
+  const login = async (userData) => {
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
+    sessionStorage.setItem("manualLogout", "true");
+
     setUser(null);
+    setReferrals(null);
+    setLeaderboard([]);
     logoutHelper();
+
+    toast.success("Logout Successfully");
   };
 
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, setUser, setAuthLoading, authLoading, referrals, setReferrals, leaderboard, userDashboardSidebar, setUserDashboardSidebar, getUserData }}>
+    <AuthContext.Provider value={{ user, login, logout, setUser, setAuthLoading, authLoading, referrals, setReferrals, leaderboard, userDashboardSidebar, setUserDashboardSidebar, getUserData, getLeaderboard }}>
       {children}
     </AuthContext.Provider>
   );

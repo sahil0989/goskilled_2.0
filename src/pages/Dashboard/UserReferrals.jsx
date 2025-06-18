@@ -8,9 +8,9 @@ export default function UserReferrals({ referrals, username }) {
     const itemsPerPage = 10;
 
     const getLevelData = () => {
-        if (activeTab === 'Level 1') return referrals.level1 || [];
-        if (activeTab === 'Level 2') return referrals.level2 || [];
-        if (activeTab === 'Level 3') return referrals.level3 || [];
+        if (activeTab === 'Level 1') return referrals?.level1 || [];
+        if (activeTab === 'Level 2') return referrals?.level2 || [];
+        if (activeTab === 'Level 3') return referrals?.level3 || [];
         return [];
     };
 

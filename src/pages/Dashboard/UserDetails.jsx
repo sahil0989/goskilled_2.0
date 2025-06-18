@@ -1,8 +1,26 @@
 import { toast } from 'sonner'
 import { generateReferralLink } from '../../api/ApiCall'
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function UserDetails({ user, referrals, setActiveTab }) {
-  const isLoading = !user || !referrals
+export default function UserDetails({ user, setActiveTab }) {
+
+  const isLoading = !user?._id;
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const init = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        navigate("/auth/login");
+      }
+    };
+
+    init();
+    // eslint-disable-next-line
+  }, []);
+
 
   const handleCopy = async () => {
     try {
@@ -14,7 +32,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
       await navigator?.clipboard?.writeText(url)
       toast.success("Referral-Code Copied Successfully!!")
     } catch (err) {
-      console.error('Failed to copy: ', err)
+      toast.error('Failed to copy: ', err)
     }
   }
 
@@ -71,7 +89,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
                 <div className={`${skeletonBox} h-10 w-full`}></div>
               ) : (
                 <div className='w-full font-bold border-2 text-xs italic text-blue-600 line-clamp-1 rounded-md flex items-center pl-4 gap-5'>
-                  <p className='line-clamp-1'>http://localhost:3000/referralLink?code={user?.referralCode}&id={user?._id}</p>
+                  <p className='line-clamp-1'>{process.env.REACT_APP_FRONTEND}/referralLink?code={user?.referralCode}&id={user?._id}</p>
                   <div className='bg-[#1a4d10] px-6 py-3 text-white cursor-pointer rounded-r-md' onClick={handleCopy}>Copy</div>
                 </div>
               )}
@@ -83,7 +101,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
           {isLoading ? (
             <div className={`${skeletonBox} h-8 w-2/3`}></div>
           ) : (
-            <div className='font-normal'>Total Referred Users: <span className='font-bold text-2xl pl-2'>{referrals?.level1?.length}</span></div>
+            <div className='font-normal'>Total Referred Users: <span className='font-bold text-2xl pl-2'>{user?.referralLevels?.level1?.length}</span></div>
           )}
         </div>
       </div>
@@ -101,7 +119,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
               <h2 className="text-gray-600 text-lg mb-2">Wallet Balance</h2>
               <br />
               <p className="text-4xl font-bold">₹ {user?.wallet?.balance?.toFixed(2)}</p>
-              <br className='hidden md:block' />
+              <br className='block' />
               <button onClick={() => setActiveTab('Wallet')} className='bg-[#1a4d10] px-8 py-3 rounded-lg shadow-md text-white font-semibold'>Redeem</button>
             </div>
           )}
@@ -111,7 +129,7 @@ export default function UserDetails({ user, referrals, setActiveTab }) {
           <div className='grid grid-cols-1 py-3 gap-3 text-white'>
             {['Level 1', 'Level 2', 'Level 3'].map((level, idx) => {
               const color = ['bg-pink-500', 'bg-purple-600', 'bg-blue-600'][idx]
-              const count = referrals?.[`level${idx + 1}`]?.length || 0
+              const count = user?.referralLevels?.[`level${idx + 1}`]?.length || 0
 
               return (
                 <div key={level} className={`w-full h-20 ${color} rounded-lg shadow-md px-8`}>

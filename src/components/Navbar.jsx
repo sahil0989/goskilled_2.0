@@ -37,6 +37,9 @@ const Navbar = () => {
                             <Link to="/courses">Courses</Link>
                         </div>
                         <div className=' cursor-pointer font-semibold'>
+                            <Link to="/blogs">Blogs</Link>
+                        </div>
+                        <div className=' cursor-pointer font-semibold'>
                             <Link to="/about">About</Link>
                         </div>
                         <div className=' cursor-pointer font-semibold'>
@@ -84,6 +87,9 @@ const Navbar = () => {
                         <hr className='w-full' />
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>
                             <Link onClick={() => setNavOpen(false)} to="/courses">Courses</Link>
+                        </div>
+                        <div className=' cursor-pointer font-semibold py-2 pl-6'>
+                            <Link onClick={() => setNavOpen(false)} to="/blogs">Blogs</Link>
                         </div>
                         <hr className='w-full' />
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>

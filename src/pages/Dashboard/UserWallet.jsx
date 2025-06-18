@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
+function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [amount, setAmount] = useState('');
 
@@ -41,7 +41,7 @@ function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
         <div className="max-w-4xl mx-auto p-4">
             {/* Wallet Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                {loading ? (
+                {false ? (
                     <>
                         <div className="bg-blue-100 p-4 rounded-xl shadow flex flex-col gap-4">
                             <SkeletonBox height="h-4" width="w-1/2" />
@@ -119,7 +119,7 @@ function UserWallet({ user, wallet, redeemHistory, loading, handleRedeem }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (
+                            {false ? (
                                 Array(3)?.fill(0)?.map((_, i) => (
                                     <tr key={i} className="border-t">
                                         <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>

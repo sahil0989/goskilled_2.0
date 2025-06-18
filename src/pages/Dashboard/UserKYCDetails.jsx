@@ -33,8 +33,6 @@ export default function UserKYCDetails({ user, handleVerifyKYC }) {
 
   useEffect(() => {
     if (user) {
-
-      console.log(user);
       setAddressDocUpload({
         url: user?.kycDetails?.addressProofDocument || "",
         uniqueId: user?.kycDetails?.addressProofDocumentUniqueId || "",
@@ -135,15 +133,21 @@ export default function UserKYCDetails({ user, handleVerifyKYC }) {
     )
   };
 
-  const isReadOnly = user?.kycStatus === "pending" || user?.kycStatus === "verified";
+  const isReadOnly = user?.kycStatus === "pending" || user?.kycStatus === "approved" || user?.kycStatus === "verified";
 
   return (
     <div className='bg-white shadow-md rounded-lg p-6 mb-6'>
 
       <div className='flex  justify-between items-center'>
         <h2 className='text-xl font-bold mb-4'>Hello, {user?.name} !!</h2>
-        <h4 className={`px-6 py-2 rounded-lg scale-75 md:scale-100 capitalize ${user?.kycStatus === 'pending' ? 'bg-yellow-500 text-black' : user?.kycStatus === 'approved' ? 'bg-green-700 text-white' : 'bg-red-600 text-white'}`}>{user?.kycStatus}</h4>
+        <h4 className={`px-6 py-2 rounded-lg scale-75 md:scale-100 capitalize cursor-none ${user?.kycStatus === 'pending' ? 'bg-yellow-500 text-black' : user?.kycStatus === 'approved' ? 'bg-green-700 text-white' : 'bg-red-600 text-white'}`}>{user?.kycStatus}</h4>
       </div>
+
+      {user?.kycStatus === 'rejected' && (
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded my-6">
+          <span className='font-semibold'>Reason of Rejection : </span>{user?.kycDetails?.rejectionReason}
+        </div>
+      )}
 
       <div className='text-xl font-semibold mb-5'>KYC Details:</div>
 
@@ -307,7 +311,7 @@ export default function UserKYCDetails({ user, handleVerifyKYC }) {
           <div className="space-y-2">
             <Label htmlFor="bankDocumentType">Bank Document Type:</Label>
             <select id="bankDocumentType" name="bankDocumentType"
-              defaultValue={user?.kycDetails?.ifscCode || ""}
+              defaultValue={user?.kycDetails?.bankDocumentType || ""}
               required disabled={isReadOnly} className="w-full border border-gray-300 rounded-md p-2">
               <option value="">Select a document</option>
               <option value="Cancelled Cheque">Cancelled Cheque</option>

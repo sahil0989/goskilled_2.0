@@ -70,7 +70,6 @@ const LoginComponent = () => {
       const data = response?.data;
 
       localStorage.setItem("token", data?.data?.token);
-      console.log("Data: ", data);
       setUser(data?.data?.user);
       login(data?.data?.user?._id);
       toast.success("Login Successfully!!");

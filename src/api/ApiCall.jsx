@@ -37,13 +37,16 @@ export const getUserDetails = async () => {
     }
 }
 
-export const fetchReferredUser = async () => {
+export const fetchReferredUser = async (id) => {
     try {
-        const response = await axios.get(`${backendUrl}/api/user/referrals/${userId}`);
-
-        return response.data;
+        if (id) {
+            const response = await axios.get(`${backendUrl}/api/user/referrals/${id}`);
+            return response.data;
+        } else {
+            const response = await axios.get(`${backendUrl}/api/user/referrals/${userId}`);
+            return response.data;
+        }
     } catch (err) {
-        console.log(err.message)
         toast.error('Internal Server Error !!')
     }
 }
@@ -66,7 +69,7 @@ export const fetchLeaderboardData = async () => {
         const response = await axios.get(`${backendUrl}/api/user/leaderboard`)
 
         return response.data;
-    } catch(err) {
+    } catch (err) {
         console.log("Error: ", err.message);
     }
 }
@@ -139,4 +142,87 @@ export async function mediaPhotoDeleteService(id) {
             error,
         };
     }
+}
+
+// courses
+
+export async function checkEnrolledCourse() {
+    const { data } = await axios.get(`${backendUrl}/student/course/course-enrolled/${userId}`);
+
+    return data;
+}
+
+export async function fetchStudentViewCourseDetailsService(courseId) {
+    const { data } = await axios.get(
+        `${backendUrl}/student/course/get/details/${courseId}`
+    );
+
+    return data;
+}
+
+export async function checkParticularEnrolledCourse(info) {
+    const { data } = await axios.get(`${backendUrl}/student/course/purchase-info/${info.courseId}/${userId}`)
+
+    return data;
+}
+
+export async function getCurrentCourseProgressService(courseId) {
+    const { data } = await axios.get(
+        `${backendUrl}/student/course-progress/get/${userId}/${courseId}`
+    );
+
+    return data;
+}
+
+export async function markLectureAsViewedService(courseId, lectureId) {
+
+
+    const { data } = await axios.post(
+        `${backendUrl}/student/course-progress/mark-lecture-viewed`,
+        {
+            userId,
+            courseId,
+            lectureId,
+        }
+    );
+
+    return data;
+}
+
+export async function resetCourseProgressService(courseId) {
+    const { data } = await axios.post(
+        `${backendUrl}/student/course-progress/reset-progress`,
+        {
+            userId,
+            courseId,
+        }
+    );
+
+    return data;
+}
+
+export async function fetchStudentViewCourseListService(query) {
+    const { data } = await axios.get(`${backendUrl}/student/course/get?${query}`);
+
+    return data;
+}
+
+// payment
+
+export async function checkPaymentStatus(formData) {
+    const { data } = await axios.post(`${backendUrl}/api/payment/check-status`, formData)
+
+    return data;
+}
+
+export async function checkPendingPayment(userId) {
+    const { data } = await axios.get(`${backendUrl}/api/payment/check-pending/${userId}`)
+
+    return data;
+}
+
+export async function paymentSubmitService(formData) {
+    const { data } = await axios.post(`${backendUrl}/api/payment/submit`, formData)
+
+    return data;
 }
