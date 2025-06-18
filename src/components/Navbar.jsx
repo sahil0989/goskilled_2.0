@@ -43,6 +43,9 @@ const Navbar = () => {
                             <Link to="/about">About</Link>
                         </div>
                         <div className=' cursor-pointer font-semibold'>
+                            <Link to="/questions">FAQ</Link>
+                        </div>
+                        <div className=' cursor-pointer font-semibold'>
                             <Link to="/contact">Contact Us</Link>
                         </div>
                     </div>
@@ -90,6 +93,9 @@ const Navbar = () => {
                         </div>
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>
                             <Link onClick={() => setNavOpen(false)} to="/blogs">Blogs</Link>
+                        </div>
+                        <div className=' cursor-pointer font-semibold py-2 pl-6'>
+                            <Link onClick={() => setNavOpen(false)} to="/questions">FAQ</Link>
                         </div>
                         <hr className='w-full' />
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>

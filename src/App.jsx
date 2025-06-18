@@ -20,6 +20,7 @@ import Blogs from "./pages/blogs/Blogs";
 import BlogDetailPage from "./pages/blogs/BlogPage";
 import MeetingPage from "./pages/meetings/MeetingPage";
 import MeetingDetails from "./pages/meetings/MeetingDetails";
+import FAQ from "./pages/Faq";
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
               <Route path="/course-progress/:id" element={<CourseProgress />} />
               <Route path="/student/course-order" element={<OfferPurchase />} />
               <Route path="/about" element={<About />} />
+              <Route path="/questions" element={<FAQ />} />
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/blogs/:id" element={<BlogDetailPage />} />
               <Route path="/meetings" element={<MeetingPage />} />
