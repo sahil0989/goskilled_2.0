@@ -18,7 +18,7 @@ export default function CourseComponent({ data }) {
 
     setLoading(true);
     try {
-      const response = await checkParticularEnrolledCourse({ courseId: data._id });
+      const response = await checkParticularEnrolledCourse({ courseId: data._id, id: user._id });
       if (response?.enrolled) {
         navigate(`/course-progress/${data._id}`);
       } else {

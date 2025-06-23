@@ -76,7 +76,7 @@ export const fetchLeaderboardData = async () => {
 
 //kyc 
 
-export const submitKYCDetails = async (data) => {
+export const submitKYCDetails = async (data, id) => {
     try {
         const normalizedData = {
             whatsAppNumber: data?.whatsAppNumber,
@@ -93,10 +93,15 @@ export const submitKYCDetails = async (data) => {
             bankDocument: data?.bankDocumentFile,
             bankDocumentType: data?.bankDocumentType
         };
+        if (id) {
+            const response = await axios.post(`${backendUrl}/api/kyc/submit/${id}`, normalizedData);
 
-        const response = await axios.post(`${backendUrl}/api/kyc/submit/${userId}`, normalizedData);
+            return response.data;
+        } else {
+            const response = await axios.post(`${backendUrl}/api/kyc/submit/${userId}`, normalizedData);
 
-        return response.data;
+            return response.data;
+        }
     } catch (err) {
         toast.error('Internal Server Error!!')
     }
@@ -161,9 +166,13 @@ export async function fetchStudentViewCourseDetailsService(courseId) {
 }
 
 export async function checkParticularEnrolledCourse(info) {
-    const { data } = await axios.get(`${backendUrl}/student/course/purchase-info/${info.courseId}/${userId}`)
-
-    return data;
+    if (info.id) {
+        const { data } = await axios.get(`${backendUrl}/student/course/purchase-info/${info.courseId}/${info.id}`)
+        return data;
+    } else {
+        const { data } = await axios.get(`${backendUrl}/student/course/purchase-info/${info.courseId}/${userId}`)
+        return data;
+    }
 }
 
 export async function getCurrentCourseProgressService(courseId) {
