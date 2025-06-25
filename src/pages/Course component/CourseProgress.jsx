@@ -32,7 +32,7 @@ export default function CourseProgress() {
         if (!user) return;
 
         try {
-            const response = await getCurrentCourseProgressService(id);
+            const response = await getCurrentCourseProgressService(id, user?._id);
             if (response?.success) {
                 if (!response?.data?.isPurchased) return;
 
@@ -106,7 +106,7 @@ export default function CourseProgress() {
         if (!currentLecture || !user) return;
 
         try {
-            const response = await markLectureAsViewedService(id, currentLecture._id);
+            const response = await markLectureAsViewedService(id, currentLecture._id, user?._id);
             if (response?.success) {
                 await fetchCurrentCourseProgress();
             }
@@ -119,7 +119,7 @@ export default function CourseProgress() {
         if (!user || !studentCurrentCourseProgress?.courseDetails?._id) return;
 
         try {
-            const response = await resetCourseProgressService(studentCurrentCourseProgress.courseDetails._id);
+            const response = await resetCourseProgressService(studentCurrentCourseProgress.courseDetails._id, user?._id);
             if (response?.success) {
                 setShowConfetti(false);
                 setShowCourseCompleteDialog(false);

@@ -151,8 +151,8 @@ export async function mediaPhotoDeleteService(id) {
 
 // courses
 
-export async function checkEnrolledCourse() {
-    const { data } = await axios.get(`${backendUrl}/student/course/course-enrolled/${userId}`);
+export async function checkEnrolledCourse(id) {
+    const { data } = await axios.get(`${backendUrl}/student/course/course-enrolled/${id}`);
 
     return data;
 }
@@ -175,21 +175,21 @@ export async function checkParticularEnrolledCourse(info) {
     }
 }
 
-export async function getCurrentCourseProgressService(courseId) {
+export async function getCurrentCourseProgressService(courseId, id) {
     const { data } = await axios.get(
-        `${backendUrl}/student/course-progress/get/${userId}/${courseId}`
+        `${backendUrl}/student/course-progress/get/${id}/${courseId}`
     );
 
     return data;
 }
 
-export async function markLectureAsViewedService(courseId, lectureId) {
+export async function markLectureAsViewedService(courseId, lectureId, id) {
 
 
     const { data } = await axios.post(
         `${backendUrl}/student/course-progress/mark-lecture-viewed`,
         {
-            userId,
+            userId : id,
             courseId,
             lectureId,
         }
@@ -198,11 +198,11 @@ export async function markLectureAsViewedService(courseId, lectureId) {
     return data;
 }
 
-export async function resetCourseProgressService(courseId) {
+export async function resetCourseProgressService(courseId, id) {
     const { data } = await axios.post(
         `${backendUrl}/student/course-progress/reset-progress`,
         {
-            userId,
+            userId : id,
             courseId,
         }
     );
@@ -224,8 +224,8 @@ export async function checkPaymentStatus(formData) {
     return data;
 }
 
-export async function checkPendingPayment(userId) {
-    const { data } = await axios.get(`${backendUrl}/api/payment/check-pending/${userId}`)
+export async function checkPendingPayment(id) {
+    const { data } = await axios.get(`${backendUrl}/api/payment/check-pending/${id}`)
 
     return data;
 }
