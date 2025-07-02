@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../@/compon
 import { Check, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import Confetti from 'react-confetti';
 
-import VideoPlayer from '../../components/videoPlayer/videoPlayer';
+// import VideoPlayer from '../../components/videoPlayer/videoPlayer';
 import { useStudent } from '../../context/student-context/StudentContext';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -15,6 +15,7 @@ import {
     markLectureAsViewedService,
     resetCourseProgressService,
 } from '../../api/ApiCall';
+import VideoPlayer from '../trial/VideoPlayer';
 
 export default function CourseProgress() {
     const { user } = useAuth();

@@ -16,11 +16,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "../@/components/ui/tabs";
-import {
-  AlertDialog,
-  AlertDialogDescription,
-} from "../@/components/ui/alert-dialog";
-import { AlertCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
@@ -29,7 +24,6 @@ import axios from "axios";
 const LoginComponent = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [userId, setUserId] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
@@ -46,7 +40,6 @@ const LoginComponent = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
 
     const formData = new FormData(e.currentTarget);
     const loginData = {};
@@ -84,7 +77,6 @@ const LoginComponent = () => {
   const handleRequestOTP = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
 
     const formData = new FormData(e.currentTarget);
     const mobileNumber = formData.get("mobileNumber");
@@ -122,7 +114,6 @@ const LoginComponent = () => {
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
 
     try {
       const response = await axios.post(
@@ -149,7 +140,6 @@ const LoginComponent = () => {
     if (timer > 0) return;
 
     setIsLoading(true);
-    setError("");
 
     try {
       const mobileNumber = document.getElementById("mobileNumber").value;
@@ -188,12 +178,6 @@ const LoginComponent = () => {
           <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && (
-            <AlertDialog variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDialogDescription>{error}</AlertDialogDescription>
-            </AlertDialog>
-          )}
 
           <Tabs defaultValue="password" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-4">
@@ -205,10 +189,18 @@ const LoginComponent = () => {
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="emailOrMobile">Mobile Number</Label>
-                  <Input id="emailOrMobile" name="emailOrMobile" placeholder="Mobile Number" required
+                  <Input
+                    id="emailOrMobile"
+                    name="emailOrMobile"
+                    placeholder="Mobile Number"
+                    required
                     pattern="^[6-9]\d{9}$"
-                    title="Enter a valid 10-digit WhatsApp number starting with 6-9"
+                    title="Phone number should be 10 digits"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    • Do not start with 0<br />
+                    • Phone number should be 10 digits
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
@@ -227,8 +219,12 @@ const LoginComponent = () => {
                     <Label htmlFor="mobileNumber">Mobile Number</Label>
                     <Input id="mobileNumber" name="mobileNumber" placeholder="Enter your mobile number" required
                       pattern="^[6-9]\d{9}$"
-                      title="Enter a valid 10-digit WhatsApp number starting with 6-9"
+                      title="Enter a valid 10-digit Phone number starting with 0-9"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      • Do not start with 0<br />
+                      • Phone number should be 10 digits
+                    </p>
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Sending OTP..." : "Send OTP"}

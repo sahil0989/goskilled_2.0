@@ -7,7 +7,7 @@ import PaymentModel from '../../components/PaymentModel';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../@/components/ui/button';
 import { Skeleton } from '../../@/components/ui/skeleton';
-import VideoPlayer from '../../components/videoPlayer/videoPlayer';
+// import VideoPlayer from '../../components/videoPlayer/videoPlayer';
 import { useStudent } from '../../context/student-context/StudentContext';
 import {
     checkEnrolledCourse,
@@ -15,6 +15,7 @@ import {
     checkPendingPayment,
     fetchStudentViewCourseDetailsService
 } from '../../api/ApiCall';
+import VideoPlayer from '../trial/VideoPlayer';
 
 export default function StudentViewCourseDetailsPage() {
     const [openModel, setOpenModel] = useState(false);

@@ -15,10 +15,12 @@ const Navbar = () => {
     const { user, logout, userDashboardSidebar, setUserDashboardSidebar } = useAuth();
 
     const handleLogout = () => {
-        toast.success("Logout Successfully!!")
+        sessionStorage.setItem("manualLogout", "true");
         logout();
         setNavOpen(false);
-    }
+    };
+
+
 
     return (
         <>

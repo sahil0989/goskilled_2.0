@@ -11,15 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../@/components/ui/card";
-import { AlertCircle } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "../validation/userValidation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  AlertDialog,
-  AlertDialogDescription,
-} from "../@/components/ui/alert-dialog";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 
@@ -33,8 +28,6 @@ const RegisterComponent = () => {
   });
 
   const { login, setUser } = useAuth();
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const query = new URLSearchParams(useLocation().search);
@@ -111,17 +104,14 @@ const RegisterComponent = () => {
   }, [phoneData?.otpSent, phoneData?.timer]);
 
   const handleRegister = async (data) => {
-    setError("");
-    setSuccess("");
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BACKEND}/api/auth/register`,
         data
       );
 
-      setSuccess(response?.data?.message);
       updatePhoneData({
         otpSent: true,
         mobileNumber: data?.mobileNumber,
@@ -131,7 +121,6 @@ const RegisterComponent = () => {
       toast.success("Registration Successfully!! Please verify your Number")
     } catch (err) {
       toast.error(err.response?.data?.message)
-      setError(err.response?.data?.message || "Registration failed");
     } finally {
       setIsLoading(false);
     }
@@ -139,13 +128,12 @@ const RegisterComponent = () => {
 
   const handleSendOTP = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BACKEND}/api/auth/request-login-otp`,
         {
           mobileNumber: phoneData?.mobileNumber,
         }
       );
-      setSuccess(response?.data?.message);
       toast.info(`OTP send on ${phoneData?.mobileNumber}`);
       updatePhoneData({
         otpSent: true,
@@ -154,7 +142,6 @@ const RegisterComponent = () => {
       });
     } catch (err) {
       toast.error('Failed to send OTP')
-      setError(err.response?.data?.message || "Failed to send OTP");
     }
   };
 
@@ -164,8 +151,6 @@ const RegisterComponent = () => {
         mobileNumber: phoneData?.mobileNumber,
         otp: phoneData?.otp,
       });
-      setSuccess(response?.data?.message);
-
 
       localStorage.setItem("token", response?.data?.data?.token);
 
@@ -178,7 +163,6 @@ const RegisterComponent = () => {
 
     } catch (err) {
       toast.error(err.response?.data?.message || "OTP Error")
-      setError(err.response?.data?.message || "OTP verification failed");
     }
   };
 
@@ -199,18 +183,6 @@ const RegisterComponent = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {error && (
-                <AlertDialog variant="destructive" className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDialogDescription>{error}</AlertDialogDescription>
-                </AlertDialog>
-              )}
-              {success && (
-                <AlertDialog variant="destructive" className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDialogDescription>{success}</AlertDialogDescription>
-                </AlertDialog>
-              )}
               <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
@@ -263,11 +235,15 @@ const RegisterComponent = () => {
                         type="text"
                         placeholder="1234567898"
                         pattern="^[6-9]\d{9}$"
-                        title="Enter a valid 10-digit WhatsApp number starting with 6-9"
+                        title="Enter a valid 10-digit WhatsApp number starting with 0-9"
                         className={errors?.mobileNumber ? "border-red-500" : ""}
                       />
                     )}
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    • Do not start with 0 <br />
+                    • Phone number should be 10 digits
+                  </p>
                   {errors?.mobileNumber && (
                     <p className="text-sm text-red-500">
                       {errors?.mobileNumber?.message}

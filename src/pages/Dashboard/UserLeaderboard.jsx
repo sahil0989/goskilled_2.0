@@ -83,7 +83,7 @@ export default function UserLeaderboard({ users, currentUser }) {
                 {/* current user data */}
                 <div className="flex justify-center items-center w-full h-full">
                     <div className="border rounded-lg shadow-md w-full h-auto flex flex-col justify-center items-center text-black p-6 md:px-12">
-                        <div className="hidden md:flex items-center gap-5 py-4">
+                        <div className="flex items-center gap-5 py-4">
                             <img
                                 src="https://th.bing.com/th/id/OIP.YoTUWMoKovQT0gCYOYMwzwHaHa?rs=1&pid=ImgDetMain"
                                 alt="pic"

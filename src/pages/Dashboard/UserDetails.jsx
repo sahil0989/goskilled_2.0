@@ -1,11 +1,11 @@
 import { toast } from 'sonner'
-import { generateReferralLink } from '../../api/ApiCall'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserDetails({ user, setActiveTab }) {
 
   const isLoading = !user?._id;
+  const [quote, setQuote] = useState("");
 
   const navigate = useNavigate()
 
@@ -21,22 +21,51 @@ export default function UserDetails({ user, setActiveTab }) {
     // eslint-disable-next-line
   }, []);
 
-
-  const handleCopy = async () => {
-    try {
-      const params = {
-        code: user?.referralCode
-      }
-
-      const url = await generateReferralLink(params)
-      await navigator?.clipboard?.writeText(url)
-      toast.success("Referral-Code Copied Successfully!!")
-    } catch (err) {
-      toast.error('Failed to copy: ', err)
+  useEffect(() => {
+    const savedQuote = sessionStorage.getItem("motivationalQuote");
+    if (savedQuote) {
+      setQuote(savedQuote);
+    } else {
+      const random = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+      setQuote(random);
+      sessionStorage.setItem("motivationalQuote", random);
     }
-  }
+  }, []);
+
+
+  const handleCopy = async (textToCopy) => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      toast.success("Copied successfully!");
+    } catch (err) {
+      toast.error("Failed to copy");
+    }
+  };
+
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const motivationalQuotes = [
+    "Every click you make is a step closer to mastering your skills.",
+    "Learning today, leading tomorrow — keep going!",
+    "Your future self will thank you for showing up today.",
+    "One lesson at a time — you're building something powerful.",
+    "Stay consistent. Even small progress is progress.",
+    "Your growth is just one module away. Keep learning!",
+    "Knowledge compounds — even 10 minutes today adds up!",
+    "Champions don’t quit. Keep sharpening your skills!",
+    "The best investment is in yourself — and you’ve already started.",
+    "You’re not just watching lessons — you’re building your future."
+  ];
 
   const skeletonBox = 'bg-gray-200 animate-pulse rounded-md'
+
 
   return (
     <>
@@ -59,38 +88,74 @@ export default function UserDetails({ user, setActiveTab }) {
         {isLoading ? (
           <div className={`${skeletonBox} h-6 w-3/4 mb-4`}></div>
         ) : (
-          <h2 className='text-2xl font-bold flex'>
-            Welcome, <span className='uppercase'>{user?.name}</span>
-            <span className='hidden md:block pl-2'>in the GoSkilled Family!</span>
-          </h2>
+          <>
+            <div className='flex flex-col md:px-8'>
+              <div className='flex flex-col'>
+                <h2 className='text-2xl font-bold flex flex-wrap'>
+                  {getGreeting()}, <span className='capitalize pl-1'>{user?.name}!</span>
+                </h2>
+                <p className='text-sm text-gray-600 mt-2 italic'>{quote}</p>
+              </div>
+            </div>
+          </>
         )}
+      </div>
 
-        <div className='py-4 flex flex-col gap-3'>
-          {isLoading ? (
-            <>
-              <div className={`${skeletonBox} h-4 w-1/2`}></div>
-              <div className={`${skeletonBox} h-4 w-1/3`}></div>
-            </>
-          ) : (
-            <>
-              <h2 className='font-semibold'>Email: <span>{user?.email}</span></h2>
-              <h2 className='font-semibold'>Phone No. : <span>+91 {user?.mobileNumber}</span></h2>
-            </>
-          )}
+      {/* Earning Blocks  */}
+      <div className='bg-white shadow-md rounded-lg p-4 md:p-6 mb-4 md:text-2xl md:font-black'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6'>
+          {['Today', 'Last 7 days', 'Last 30 days', 'Total'].map((label, idx) => {
+            const color = ['bg-orange-500', 'bg-purple-600', 'bg-blue-500', 'bg-pink-500'][idx]
+
+            return (
+              <div key={label} className={`${color} w-full h-28 md:h-36 rounded-lg shadow-lg relative`}>
+                <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
+                  <h4 className='font-normal text-sm md:text-base uppercase'>{label} Earning</h4>
+                  {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>Rs. 0</h4>}
+                </div>
+                <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
+                <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
+                <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
+              </div>
+            )
+          })}
         </div>
       </div>
 
       <div className='flex flex-col md:flex-row md:gap-6'>
         <div className='bg-white shadow-md rounded-lg p-6 mb-4 md:text-2xl md:font-black w-full'>
-          <div className='flex justify-between items-center w-full'>
+          <div className='flex justify-between items-center flex-col w-full'>
             <div className='flex flex-col w-full'>
               <h3 className='font-semibold mb-2'>Share your referral Link: </h3>
               {isLoading ? (
                 <div className={`${skeletonBox} h-10 w-full`}></div>
               ) : (
                 <div className='w-full font-bold border-2 text-xs italic text-blue-600 line-clamp-1 rounded-md flex items-center pl-4 gap-5'>
-                  <p className='line-clamp-1'>{process.env.REACT_APP_FRONTEND}/referralLink?code={user?.referralCode}&id={user?._id}</p>
-                  <div className='bg-[#1a4d10] px-6 py-3 text-white cursor-pointer rounded-r-md' onClick={handleCopy}>Copy</div>
+                  <p className='line-clamp-1'>
+                    {process.env.REACT_APP_FRONTEND}/referralLink?code={user?.referralCode}&id={user?._id}
+                  </p>
+                  <div
+                    className='bg-[#1a4d10] px-6 py-3 text-white cursor-pointer rounded-r-md'
+                    onClick={() =>
+                      handleCopy(
+                        `${process.env.REACT_APP_FRONTEND}/referralLink?code=${user?.referralCode}&id=${user?._id}`
+                      )
+                    }>Copy</div>
+                </div>
+              )}
+            </div>
+
+
+            <div className='flex flex-col w-full mt-6'>
+              <h3 className='font-semibold mb-2'>Share your referral Code: </h3>
+              {isLoading ? (
+                <div className={`${skeletonBox} h-10 w-full`}></div>
+              ) : (
+                <div className='w-full font-bold border-2 text-xs italic text-blue-600 line-clamp-1 rounded-md flex items-center pl-4 gap-5'>
+                  <p className='line-clamp-1 w-full text-lg'>{user?.referralCode}</p>
+                  <div
+                    className='bg-[#1a4d10] px-6 py-3 text-white cursor-pointer rounded-r-md'
+                    onClick={() => handleCopy(user?.referralCode)}>Copy</div>
                 </div>
               )}
             </div>
@@ -145,25 +210,6 @@ export default function UserDetails({ user, setActiveTab }) {
         </div>
       </div>
 
-      <div className='bg-white shadow-md rounded-lg p-4 md:p-6 mb-4 md:text-2xl md:font-black'>
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6'>
-          {['Today', 'Last 7 days', 'Last 30 days', 'Total'].map((label, idx) => {
-            const color = ['bg-orange-500', 'bg-purple-600', 'bg-blue-500', 'bg-pink-500'][idx]
-
-            return (
-              <div key={label} className={`${color} w-full h-28 md:h-36 rounded-lg shadow-lg relative`}>
-                <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
-                  <h4 className='font-normal text-sm md:text-base uppercase'>{label} Earning</h4>
-                  {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>Rs. 0</h4>}
-                </div>
-                <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
-                <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
-                <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
     </>
   )
 }

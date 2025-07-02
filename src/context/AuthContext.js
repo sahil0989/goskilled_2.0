@@ -25,13 +25,13 @@ export const AuthProvider = ({ children }) => {
         try {
           const isTokenValid = isJWTValid(token);
           if (!isTokenValid) {
-            logout();
+            logout("Session timeout. Please login again!");
             return;
           }
-          await getUserData();
 
+          await getUserData();
         } catch (err) {
-          logout();
+          logout("Session error. Please login again!");
         }
       }
     };
@@ -40,22 +40,25 @@ export const AuthProvider = ({ children }) => {
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    console.log("Referrals updated:", referrals);
-  }, [referrals]);
-
 
   const getUserData = async () => {
     setAuthLoading(true);
+
     const response = await getUserDetails();
 
-    if (response && response.success) {
-      console.log('User....')
+    if (response?.success) {
       setUser(response.data.user);
+      await getLeaderboard();
+    } else {
+      const wasManual = sessionStorage.getItem("manualLogout") === "true";
+      if (!wasManual) {
+        logout("Session expired. Please login again.");
+      }
     }
+
     setAuthLoading(false);
-    await getLeaderboard();
-  }
+  };
+
 
   const getLeaderboard = async () => {
     const data = await fetchLeaderboardData();
@@ -68,17 +71,27 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  const logout = () => {
-    sessionStorage.setItem("manualLogout", "true");
+  const logout = (message = null) => {
+    const wasManual = sessionStorage.getItem("manualLogout") === "true";
 
+    // Clear user data
     setUser(null);
     setReferrals(null);
     setLeaderboard([]);
     logoutHelper();
 
-    toast.success("Logout Successfully");
-  };
+    // Show appropriate toast
+    if (wasManual) {
+      toast.success("Logout Successfully!!");
+    } else if (message) {
+      toast.error(message);
+    }
 
+    // Delay clearing to avoid race conditions
+    setTimeout(() => {
+      sessionStorage.removeItem("manualLogout");
+    }, 100); // Enough time for other checks to complete
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout, setUser, setAuthLoading, authLoading, referrals, setReferrals, leaderboard, userDashboardSidebar, setUserDashboardSidebar, getUserData, getLeaderboard }}>
