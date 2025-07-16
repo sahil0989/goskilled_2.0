@@ -160,9 +160,17 @@ const UserDashboard = () => {
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <li key={item.name} className="flex items-center gap-2 px-4 py-2 cursor-pointer">
-                    <Icon size={18} />
-                    <span>{item.name}</span>
+                  <li key={item.name} className="text-sm">
+                    <button
+                      onClick={() => setActiveTab(item.name)}
+                      className={`w-full flex items-center gap-3 px-4 py-2 rounded-md ${activeTab === item.name
+                          ? 'bg-[#1a4d10]/90 text-white'
+                          : 'hover:bg-[#1a4d10] hover:text-white'
+                        }`}
+                    >
+                      <Icon size={18} />
+                      <span>{item.name}</span>
+                    </button>
                   </li>
                 );
               })}
