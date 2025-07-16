@@ -2,7 +2,7 @@ import { toast } from 'sonner'
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function UserDetails({ user, setActiveTab }) {
+export default function UserDetails({ user, setActiveTab, earningDetails }) {
 
   const isLoading = !user?._id;
   const [quote, setQuote] = useState("");
@@ -104,21 +104,54 @@ export default function UserDetails({ user, setActiveTab }) {
       {/* Earning Blocks  */}
       <div className='bg-white shadow-md rounded-lg p-4 md:p-6 mb-4 md:text-2xl md:font-black'>
         <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6'>
-          {['Today', 'Last 7 days', 'Last 30 days', 'Total'].map((label, idx) => {
-            const color = ['bg-orange-500', 'bg-purple-600', 'bg-blue-500', 'bg-pink-500'][idx]
 
-            return (
-              <div key={label} className={`${color} w-full h-28 md:h-36 rounded-lg shadow-lg relative`}>
-                <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
-                  <h4 className='font-normal text-sm md:text-base uppercase'>{label} Earning</h4>
-                  {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>Rs. 0</h4>}
-                </div>
-                <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
-                <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
-                <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
-              </div>
-            )
-          })}
+          {/* Today's Earning  Block */}
+          <div className={`bg-orange-500 w-full h-28 md:h-32 rounded-lg shadow-lg relative`}>
+            <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
+              <h4 className='font-normal text-sm md:text-base uppercase'>Today's Earning</h4>
+              {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>₹ {earningDetails?.today}</h4>}
+            </div>
+            <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
+          </div>
+
+
+          {/* 7 Days Earning  Block */}
+          <div className={`bg-purple-600 w-full h-28 md:h-32 rounded-lg shadow-lg relative`}>
+            <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
+              <h4 className='font-normal text-sm md:text-base uppercase'>Last 7 Day's Earning</h4>
+              {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>₹ {earningDetails?.last7Days}</h4>}
+            </div>
+            <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
+          </div>
+
+
+          {/* 30 Days Earning  Block */}
+          <div className={`bg-blue-500 w-full h-28 md:h-32 rounded-lg shadow-lg relative`}>
+            <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
+              <h4 className='font-normal text-sm md:text-base uppercase'>Last 30 Day's Earning</h4>
+              {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>₹ {earningDetails?.last30Days}</h4>}
+            </div>
+            <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
+          </div>
+
+
+
+          {/* Total Earning  Block */}
+          <div className={`bg-pink-500 w-full h-28 md:h-32 rounded-lg shadow-lg relative`}>
+            <div className='flex flex-col text-white/90 justify-between w-full h-full p-4'>
+              <h4 className='font-normal text-sm md:text-base uppercase'>Total Earning</h4>
+              {isLoading ? <div className={`${skeletonBox} h-6 w-1/2`}></div> : <h4 className='font-bold text-2xl'>₹ {earningDetails?.totalEarned}</h4>}
+            </div>
+            <div className='absolute w-8 h-8 bg-white/10 top-0 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-8 right-0 rounded-full'></div>
+            <div className='absolute w-8 h-8 bg-white/5 top-0 right-8 rounded-full'></div>
+          </div>
         </div>
       </div>
 

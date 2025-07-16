@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Footer from '../components/Footer'
 import svga from '../images/elements/map.svg'
 import contactImg from '../images/elements/contact.svg'
+import Footer from '../components/FooterSection'
 
 export default function ContactUs() {
 

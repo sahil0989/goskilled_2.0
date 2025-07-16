@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PaymentModel from "../components/PaymentModel";
 import { checkEnrolledCourse, fetchStudentViewCourseListService } from "../api/ApiCall";
@@ -13,7 +13,7 @@ const OfferPurchase = () => {
   const [loading, setLoading] = useState(true);
   const [offersList, setOffersList] = useState([]);
   const [selectedOffers, setSelectedOffers] = useState([]);
-  const [courseType, setCourseType] = useState("skill"); // or "career"
+  const [courseType, setCourseType] = useState("skill");
   const [openModel, setOpenModel] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const OfferPurchase = () => {
         navigate("/auth/login");
         return;
       }
-      await loadOffers(storedUser || user);
+      await loadOffers(user);
     };
 
     handleLogin();
@@ -32,7 +32,7 @@ const OfferPurchase = () => {
 
   const loadOffers = async (currentUser) => {
     try {
-      const userId = currentUser?.user?.id || currentUser?.id;
+      const userId = user?._id;
       const enrolled = await checkEnrolledCourse(userId);
       if (enrolled?.enrolled) {
         navigate("/courses");
@@ -94,7 +94,7 @@ const OfferPurchase = () => {
       <div className="h-[calc(100vh-80px)] bg-gray-100 p-4">
         <div className="grid md:grid-cols-2 gap-4 h-full overflow-hidden">
           {/* Left - Offer Selection */}
-          <div className="bg-white p-6 rounded-2xl shadow overflow-y-auto hide-scrollbar">
+          <div className="bg-white py-3 px-3 rounded-2xl shadow overflow-y-auto hide-scrollbar">
             <div className="mb-4">
               <label className="font-semibold">Choose Plan:</label>
               <select
@@ -103,19 +103,19 @@ const OfferPurchase = () => {
                   setSelectedOffers([]);
                   setCourseType(e.target.value);
                 }}
-                className="ml-2 p-2 border rounded"
+                className="ml-2 p-1 border rounded"
               >
                 <option value="skill">Skill Builder</option>
                 <option value="career">Career Booster</option>
               </select>
             </div>
 
-            <h2 className="text-xl font-semibold mb-4">Available Courses</h2>
-            <ul className="space-y-3">
+            <h2 className="text-lg font-semibold mb-2 md:mb-4">Available Courses</h2>
+            <ul className="space-y-2">
               {offersList.map((offer) => (
                 <li
                   key={offer._id}
-                  className={`p-3 rounded-xl cursor-pointer flex justify-between items-center transition ${
+                  className={`px-3 py-2 md:py-3 rounded-xl text-sm cursor-pointer flex justify-between items-center transition ${
                     isSelected(offer._id)
                       ? "bg-green-100 border-2 border-green-400"
                       : "bg-gray-50 hover:bg-gray-200"
@@ -131,20 +131,20 @@ const OfferPurchase = () => {
           {/* Right - Cart & Checkout */}
           <div className="bg-white p-6 rounded-2xl shadow flex flex-col relative">
             <div className="overflow-y-auto pb-24 hide-scrollbar">
-              <h2 className="text-xl font-semibold mb-4">Selected Courses</h2>
-              <ul className="space-y-3">
+              <h2 className="text-lg font-semibold mb-2">Selected Courses</h2>
+              <ul className="space-y-2">
                 {selectedOffers.length === 0 ? (
                   <p className="text-gray-500">No Course selected</p>
                 ) : (
                   selectedOffers.map((item) => (
                     <li
                       key={item._id}
-                      className="bg-green-50 p-3 rounded-xl border border-green-300 flex justify-between items-center"
+                      className="bg-green-50 px-3 py-2  md:py-3 text-sm rounded-xl border border-green-300 flex justify-between items-center"
                     >
                       <span>{item.title}</span>
                       <button
                         onClick={() => handleRemove(item._id)}
-                        className="text-red-500 hover:underline text-sm"
+                        className="text-red-500 hover:underline text-xs"
                       >
                         Remove
                       </button>

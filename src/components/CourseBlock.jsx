@@ -4,11 +4,11 @@ import { Button } from '../@/components/ui/button'
 
 export default function CourseBlock({ data }) {
     return (
-        <div className='w-72 shadow-sm bg-white pb-3 rounded-lg'>
-            <div className=''>
-                <img src={data?.imgUrl} className='w-full h-40 object-cover rounded-t-lg' alt='' />
+        <div className='w-72 shadow-sm bg-white pb-3 rounded-lg border-2 border-green-600'>
+            <div>
+                <img src={data?.imgUrl} className='w-full h-40 object-cover rounded-t-lg shadow-md' alt='' />
             </div>
-            <div className='pl-2 pt-2'>
+            <div className='pl-2 pt-4'>
                 <h2 className='font-bold line-clamp-2'>{data.title}</h2>
                 <p className='text-sm line-clamp-2'>{data.description}</p>
 

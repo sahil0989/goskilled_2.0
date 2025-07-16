@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
+function UserWallet({ user, wallet, redeemHistory, handleRedeem, earningDetails, earningHistory }) {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [amount, setAmount] = useState('');
+    const [activeTab, setActiveTab] = useState('redeem')
 
     const onSubmitRedeem = () => {
         const amt = Number(amount);
@@ -39,6 +40,7 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
 
     return (
         <div className="max-w-4xl mx-auto p-4">
+
             {/* Wallet Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 {false ? (
@@ -55,6 +57,14 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
                     </>
                 ) : (
                     <>
+                        <div className="bg-orange-100 p-4 rounded-xl shadow flex items-center justify-between px-8">
+                            <p className="text-gray-700 font-semibold">Today's Earning</p>
+                            <p className="text-xl font-bold text-orange-600 break-words">{formatCurrency(earningDetails?.today || 0)}</p>
+                        </div>
+                        <div className="bg-violet-100 p-4 rounded-xl shadow flex items-center justify-between px-8">
+                            <p className="text-gray-700 font-semibold">Last 30 Days Earning</p>
+                            <p className="text-xl font-bold text-violet-700 break-words">{formatCurrency(earningDetails?.last30Days || 0)}</p>
+                        </div>
                         <div className="bg-blue-100 p-4 rounded-xl shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-8">
                             <div className='flex justify-between w-full md:flex-col'>
                                 <p className="text-gray-700 font-semibold">Wallet Balance</p>
@@ -69,7 +79,7 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
                         </div>
                         <div className="bg-green-100 p-4 rounded-xl shadow flex items-center justify-between px-8">
                             <p className="text-gray-700 font-semibold">Total Earned</p>
-                            <p className="text-xl font-bold text-green-700 break-words">{formatCurrency(wallet?.totalEarned || 0)}</p>
+                            <p className="text-xl font-bold text-green-700 break-words">{formatCurrency(earningDetails?.totalEarned || 0)}</p>
                         </div>
                     </>
                 )}
@@ -105,65 +115,136 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem }) {
                 </div>
             )}
 
-            {/* Redeem History */}
-            <div className="mt-8">
-                <h3 className="text-lg font-bold mb-2 text-center sm:text-left">Redeem History</h3>
-                <div className="overflow-x-auto rounded-md shadow">
-                    <table className="min-w-full bg-white text-sm sm:text-base">
-                        <thead>
-                            <tr className="bg-gray-100 text-gray-700 text-left">
-                                <th className="p-3 border-b">Amount</th>
-                                <th className="p-3 border-b">Status</th>
-                                <th className="p-3 border-b">Requested At</th>
-                                <th className="p-3 border-b">Approved/Processed At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {false ? (
-                                Array(3)?.fill(0)?.map((_, i) => (
-                                    <tr key={i} className="border-t">
-                                        <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
-                                        <td className="p-3"><SkeletonBox height="h-4" width="w-20" /></td>
-                                        <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
-                                        <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
-                                    </tr>
-                                ))
-                            ) : redeemHistory?.length === 0 ? (
-                                <tr>
-                                    <td className="p-3 text-gray-500" colSpan="4">
-                                        No history found.
-                                    </td>
-                                </tr>
-                            ) : (
-                                redeemHistory?.map((entry, index) => (
-                                    <tr key={index} className="border-t hover:bg-gray-50">
-                                        <td className="p-3 whitespace-nowrap">₹ {entry?.amount}</td>
-                                        <td className="p-3 whitespace-nowrap">
-                                            <span
-                                                className={`px-2 py-1 rounded text-xs font-semibold ${entry?.status === 'Applied'
-                                                    ? 'bg-yellow-100 text-yellow-800'
-                                                    : entry.status === 'Paid'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-gray-200 text-gray-600'
-                                                    }`}
-                                            >
-                                                {entry?.status}
-                                            </span>
-                                        </td>
-                                        <td className="p-3 whitespace-nowrap">
-                                            {new Date(entry.requestedAt).toLocaleString()}
-                                        </td>
-                                        <td className="p-3 whitespace-nowrap">
-                                            {entry?.processedAt ? new Date(entry?.processedAt)?.toLocaleString() : '—'}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+            <div className='my-6 w-full flex justify-center gap-6'>
+                <div className='border bg-gray-100 flex items-center justify-center rounded-full p-2 gap-5 shadow-inner font-semibold'>
+                    <div onClick={() => setActiveTab('redeem')} className={`px-6 py-2 rounded-full cursor-pointer ${activeTab === 'redeem' ? "bg-white shadow" : ""}`}>Reedem History</div>
+                    <div onClick={() => setActiveTab('wallet')} className={`px-6 py-2 rounded-full cursor-pointer ${activeTab !== 'redeem' ? "bg-white shadow" : ""}`}>Wallet History</div>
                 </div>
             </div>
-        </div>
+
+            {/* Reedem History  */}
+            {activeTab === 'redeem' &&
+                <div div className="mt-8">
+                    <h3 className="text-lg font-bold mb-2 text-center sm:text-left">Redeem History</h3>
+                    <div className="overflow-x-auto rounded-md shadow">
+                        <table className="min-w-full bg-white text-sm sm:text-base">
+                            <thead>
+                                <tr className="bg-gray-100 text-gray-700 text-left">
+                                    <th className="p-3 border-b">S.No.</th>
+                                    <th className="p-3 border-b">Amount</th>
+                                    <th className="p-3 border-b">Status</th>
+                                    <th className="p-3 border-b">Requested At</th>
+                                    <th className="p-3 border-b">Approved/Processed At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {false ? (
+                                    Array(3)?.fill(0)?.map((_, i) => (
+                                        <tr key={i} className="border-t">
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-20" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
+                                        </tr>
+                                    ))
+                                ) : redeemHistory?.length === 0 ? (
+                                    <tr>
+                                        <td className="p-3 text-gray-500" colSpan="4">
+                                            No history found.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    redeemHistory?.map((entry, index) => (
+                                        <tr key={index} className="border-t hover:bg-gray-50">
+                                            <td className="p-3 whitespace-nowrap">{index + 1}</td>
+                                            <td className="p-3 whitespace-nowrap">₹ {entry?.amount}</td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                <span
+                                                    className={`px-2 py-1 rounded text-xs font-semibold ${entry?.status === 'Applied'
+                                                        ? 'bg-yellow-100 text-yellow-800'
+                                                        : entry.status === 'Paid'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : 'bg-gray-200 text-gray-600'
+                                                        }`}
+                                                >
+                                                    {entry?.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {new Date(entry.requestedAt).toLocaleString()}
+                                            </td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {entry?.processedAt ? new Date(entry?.processedAt)?.toLocaleString() : '—'}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            {/* Wallet History  */}
+            {activeTab === 'wallet' &&
+                <div div className="mt-8">
+                    <h3 className="text-lg font-bold mb-2 text-center sm:text-left">Wallet History</h3>
+                    <div className="overflow-x-auto rounded-md shadow">
+                        <table className="min-w-full bg-white text-sm sm:text-base">
+                            <thead>
+                                <tr className="bg-gray-100 text-gray-700 text-left">
+                                    <th className="p-3 border-b">S.No.</th>
+                                    <th className="p-3 border-b">Amount</th>
+                                    <th className="p-3 border-b">Course Type</th>
+                                    <th className="p-3 border-b">Purchase Date</th>
+                                    <th className="p-3 border-b">Purchased By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {false ? (
+                                    Array(3)?.fill(0)?.map((_, i) => (
+                                        <tr key={i} className="border-t">
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-16" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-20" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
+                                            <td className="p-3"><SkeletonBox height="h-4" width="w-32" /></td>
+                                        </tr>
+                                    ))
+                                ) : earningHistory?.length === 0 ? (
+                                    <tr>
+                                        <td className="p-3 text-gray-500" colSpan="4">
+                                            No history found.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    earningHistory?.map((entry, index) => (
+                                        <tr key={index} className="border-t hover:bg-gray-50">
+                                            <td className="p-3 whitespace-nowrap">{index + 1}</td>
+                                            <td className="p-3 whitespace-nowrap">₹ {entry?.amount}</td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {{
+                                                    skill: 'Skill Builder',
+                                                    career: 'Career Booster'
+                                                }[entry?.courseType] || '—'}
+                                            </td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {new Date(entry.purchasedDate).toLocaleString()}
+                                            </td>
+                                            <td className="p-3 whitespace-nowrap">
+                                                {entry?.referredUser?.name}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+        </div >
     );
 }
 

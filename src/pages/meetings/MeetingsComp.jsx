@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-export default function ZoomMeetingCard({ meeting }) {
+export default function ZoomMeetingCard({ meeting, setCourseId, setActiveTab }) {
     const dateTime = new Date(`${meeting.date}T${meeting.time}`);
     const [timeLeft, setTimeLeft] = useState(getRemainingTime());
 
@@ -78,12 +77,15 @@ export default function ZoomMeetingCard({ meeting }) {
                 )}
 
                 {/* Join Button */}
-                <Link
-                    to={`/meetings/${meeting._id}`}
-                    className="block w-full text-center bg-green-800 text-white py-2 rounded-full hover:bg-green-900 transition"
+                <div
+                    onClick={() => {
+                        setCourseId(meeting._id);
+                        setActiveTab('Meeting')
+                    }}
+                    className=" cursor-pointer block w-full text-center bg-green-800 text-white py-2 rounded-full hover:bg-green-900 transition"
                 >
                     Join Meeting
-                </Link>
+                </div>
             </div>
         </div>
     );

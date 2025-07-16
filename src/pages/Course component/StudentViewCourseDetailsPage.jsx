@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../@/components/ui/card';
-import { CheckCircle, Lock, PlayCircle } from 'lucide-react';
+import { BookCheckIcon, Lock, PlayCircle, ShieldCheck, VideoIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import PaymentModel from '../../components/PaymentModel';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../@/components/ui/button';
 import { Skeleton } from '../../@/components/ui/skeleton';
-// import VideoPlayer from '../../components/videoPlayer/videoPlayer';
 import { useStudent } from '../../context/student-context/StudentContext';
 import {
     checkEnrolledCourse,
@@ -16,11 +15,17 @@ import {
     fetchStudentViewCourseDetailsService
 } from '../../api/ApiCall';
 import VideoPlayer from '../trial/VideoPlayer';
+import { FaCertificate } from 'react-icons/fa';
+import Footer from '../../components/FooterSection';
 
 export default function StudentViewCourseDetailsPage() {
     const [openModel, setOpenModel] = useState(false);
-    const [paymentStatus, setPaymentStatus] = useState("not_found");
-    const [checkPayment, setCheckPayment] = useState(true);
+    const [paymentStatus, setPaymentStatus] = useState('not_found');
+    const [canPurchase, setCanPurchase] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState("");
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const { id } = useParams();
     const { user } = useAuth();
@@ -37,25 +42,24 @@ export default function StudentViewCourseDetailsPage() {
 
     // Check login and payment status
     useEffect(() => {
-        const handleLogin = async () => {
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
-                navigate("/auth/login");
-                return;
+        const checkUserPaymentStatus = async () => {
+            if (!user?._id) return;
+
+            try {
+                const formData = { userId: user._id, courseId: id };
+                const paymentResp = await checkPaymentStatus(formData);
+                setPaymentStatus(paymentResp?.status || 'not_found');
+
+                const pendingResp = await checkPendingPayment(user._id);
+                setCanPurchase(pendingResp?.canPurchase ?? true);
+            } catch (error) {
+                console.error('Error checking payment status:', error);
+                // Optionally show toast here
             }
-            const userId = user?._id;
-            if (!userId) return;
-
-            const formData = { userId, courseId: id };
-            const response = await checkPaymentStatus(formData);
-            setPaymentStatus(response?.status);
-
-            const data = await checkPendingPayment(userId);
-            setCheckPayment(data?.canPurchase);
         };
-        handleLogin();
-        // eslint-disable-next-line
-    }, [user, navigate]);
+        checkUserPaymentStatus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, id]);
 
     // Fetch course details by ID
     useEffect(() => {
@@ -64,21 +68,26 @@ export default function StudentViewCourseDetailsPage() {
         async function fetchData() {
             setLoadingState(true);
             setCurrentCourseDetailsId(id);
-
-            const response = await fetchStudentViewCourseDetailsService(id);
-            if (response?.success) {
-                setStudentViewCourseDetails(response?.data);
-            } else {
+            try {
+                const response = await fetchStudentViewCourseDetailsService(id);
+                if (response?.success) {
+                    setStudentViewCourseDetails(response.data);
+                } else {
+                    setStudentViewCourseDetails(null);
+                }
+            } catch (error) {
+                console.error('Error fetching course details:', error);
                 setStudentViewCourseDetails(null);
+            } finally {
+                setLoadingState(false);
             }
-            setLoadingState(false);
         }
 
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
-    // Reset details when location changes and is not course details page
+    // Reset details when route changes away from this page
     useEffect(() => {
         if (!location.pathname.includes('course/details')) {
             setStudentViewCourseDetails(null);
@@ -89,132 +98,248 @@ export default function StudentViewCourseDetailsPage() {
 
     if (loadingState) return <Skeleton className="w-full h-[400px]" />;
 
-    const getIndexOfFreePreviewUrl = studentViewCourseDetails?.curriculum?.findIndex(
-        (item) => item?.freePreview
-    );
-
-    // Handle Buy Now button click
     const handlePaymentBtn = async () => {
-        if (!checkPayment) {
-            toast.warning("Your previous payment is still pending.");
+        if (!localStorage.getItem('user')) {
+            navigate('/auth/login');
             return;
         }
 
-        const userId = user?._id;
-        const response = await checkEnrolledCourse(userId);
+        if (!canPurchase) {
+            toast.warning('Your previous payment is still pending.');
+            return;
+        }
 
-        if (response?.enrolled) {
-            setOpenModel(true);
-        } else {
-            navigate('/student/course-order');
+        setLoading(true);
+        try {
+            const userId = user?._id;
+            const response = await checkEnrolledCourse(userId);
+            if (response?.enrolled) {
+                setOpenModel(true);
+            } else {
+                navigate('/student/course-order');
+            }
+        } catch (error) {
+            console.error('Error checking enrollment:', error);
+            toast.error('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
+
+
+    const openPreview = (url) => {
+        setPreviewUrl(url);
+        setShowPreview(true);
+    };
+
+    const closePreview = () => {
+        setShowPreview(false);
+        setPreviewUrl("");
+    };
+
+    console.log("Student: ", studentViewCourseDetails)
+
     return (
+
         <>
             <div className="container mx-auto p-4">
-                <div className="bg-[#1A6E0A] text-white p-8 rounded-t-lg">
-                    <h1 className="text-3xl font-bold mb-4">{studentViewCourseDetails?.title}</h1>
-                    <p className="text-xl mb-4">{studentViewCourseDetails?.subtitle}</p>
-                    <div className="flex items-center space-x-4 mt-2 text-sm">
-                        <span>Created by: {studentViewCourseDetails?.instructorName}</span>
+                {/* Hero Section */}
+                <div className='relative w-full h-auto bg-gradient-to-br from-[#1A6E0A] via-[#188F10] to-[#145708] p-6 rounded-lg text-white mb-6 overflow-hidden'>
+                    {/* Decorative blurred radial background */}
+                    <div className="absolute top-0 left-0 w-60 h-60 bg-white/10 rounded-full blur-2xl animate-pulse -z-10"></div>
+                    <div className="absolute bottom-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-2xl animate-pulse -z-10"></div>
+
+                    <div className="relative z-10">
+                        <h1 className="text-3xl md:text-4xl font-bold drop-shadow-lg mb-2">{studentViewCourseDetails?.title}</h1>
+                        <p className="text-md md:text-lg mb-6 opacity-90">{studentViewCourseDetails?.subtitle}</p>
+
+                        <div className="space-y-2">
+                            {studentViewCourseDetails?.heroSection?.content?.map((content, index) => (
+                                <div key={index} className="flex items-center gap-3">
+                                    <span className="bg-white/20 p-2 rounded-full text-white animate-pulse">
+                                        <FaCertificate className="text-white-300" />
+                                    </span>
+                                    <span className="text-sm md:text-base font-medium">{content}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-8 mt-8">
-                    <main className="flex-grow">
-                        <Card className="mb-8">
+                <div className="flex flex-col-reverse md:flex-row gap-4">
+                    <main className="w-full">
+                        {/* What You'll Learn */}
+                        <Card className="mb-4">
                             <CardHeader>
-                                <CardTitle>What you'll learn</CardTitle>
+                                <CardTitle>What You’ll Learn</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    {studentViewCourseDetails?.objectives
-                                        ?.split(',')
-                                        .map((objective, index) => (
-                                            <li key={index} className="flex items-start">
-                                                <CheckCircle className="mr-2 h-5 w-5 text-green-500 flex-shrink-0" />
-                                                <span>{objective}</span>
-                                            </li>
-                                        ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="mb-8">
-                            <CardHeader>
-                                <CardTitle>Course Description</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {studentViewCourseDetails?.description}
-                            </CardContent>
-                        </Card>
-
-                        <Card className="mb-8">
-                            <CardHeader>
-                                <CardTitle>Course Curriculum</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ul>
-                                    {studentViewCourseDetails?.curriculum?.map((curriculumItem, index) => (
-                                        <li
-                                            key={index}
-                                            className={`${curriculumItem?.freePreview ? 'cursor-pointer' : 'cursor-not-allowed'
-                                                } flex items-center mb-4`}
-                                        >
-                                            {curriculumItem?.freePreview ? (
-                                                <PlayCircle className="mr-2 h-4 w-4" />
-                                            ) : (
-                                                <Lock className="mr-2 h-4 w-4" />
-                                            )}
-                                            <span>{curriculumItem?.title}</span>
-                                        </li>
+                                <div className="space-y-2">
+                                    {studentViewCourseDetails?.whatYouWillLearn?.map((reason, index) => (
+                                        <div key={index} className="flex items-start gap-2">
+                                            <span className="mt-1"> <BookCheckIcon /> </span>
+                                            <span className=' font-semibold'>{reason}</span>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Why Choose */}
+                        <Card className="mb-4">
+                            <CardHeader>
+                                <CardTitle>Why Choose This Course</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-2">
+                                    {studentViewCourseDetails?.whyChoose?.map((reason, index) => (
+                                        <div key={index} className="flex items-start gap-2">
+                                            <span className="mt-1"> <ShieldCheck /> </span>
+                                            <span className=' font-semibold'>{reason}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Description */}
+                        <Card className="mb-4">
+                            <CardHeader>
+                                <CardTitle>Description</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p>{studentViewCourseDetails?.description}</p>
+                            </CardContent>
+                        </Card>
+
+                        {/* FAQs */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>FAQ</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {studentViewCourseDetails?.faqs?.length ? (
+                                    studentViewCourseDetails.faqs.map((faq, index) => (
+                                        <div key={index} className="py-2">
+                                            <details className="group border p-2 rounded-lg border-gray-200">
+                                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
+                                                    <span>{faq.question}</span>
+                                                    <span className="transition group-open:rotate-180">
+                                                        <svg
+                                                            fill="none"
+                                                            height="24"
+                                                            width="24"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <path d="M6 9l6 6 6-6" />
+                                                        </svg>
+                                                    </span>
+                                                </summary>
+                                                <p className="text-neutral-600 mt-3">{faq.answer}</p>
+                                            </details>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No FAQs available yet.</p>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Reviews */}
+                        <Card className="my-4">
+                            <CardHeader>
+                                <CardTitle>Student Reviews</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {studentViewCourseDetails?.reviews?.map((rev, index) => (
+                                    <div key={index} className="border-b pb-4">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h4 className="font-semibold text-lg">{rev.reviewer || "Anonymous"}</h4>
+                                            <span className="text-yellow-500 font-medium">⭐ {rev.rating} / 5</span>
+                                        </div>
+                                        <p className="text-gray-700 italic">"{rev.comment}"</p>
+                                    </div>
+                                ))}
                             </CardContent>
                         </Card>
                     </main>
 
-                    <aside className="w-full md:w-[500px]">
-                        <Card className="sticky top-4">
-                            <CardContent className="p-6">
-                                <div className="w-full mb-4 rounded-lg overflow-visible">
-                                    <div className="relative w-full pt-[56.25%]"> {/* 16:9 aspect ratio */}
-                                        <div className="absolute top-0 left-0 w-full h-full">
-                                            <VideoPlayer
-                                                url={
-                                                    getIndexOfFreePreviewUrl !== -1
-                                                        ? studentViewCourseDetails?.curriculum[getIndexOfFreePreviewUrl]?.videoUrl
-                                                        : ''
-                                                }
-                                                width="100%"
-                                                height="100%"
-                                                controls
-                                                onProgressUpdate={() => { }}
-                                            />
-                                        </div>
+                    <aside className="w-full">
+                        <Card className=" w-full">
+                            <CardContent className=" w-full">
+                                {/* Video Preview */}
+                                <div className=" w-full py-6">
+                                    <div className="w-full h-full">
+                                        <VideoPlayer className=' w-full' url={studentViewCourseDetails?.curriculum[0]?.videoUrl || ''} />
                                     </div>
                                 </div>
 
-
-                                <div className="mb-4">
-                                    <span className="text-3xl font-bold">
-                                        Rs. {studentViewCourseDetails?.pricing}
-                                    </span>
-                                </div>
-
-                                {paymentStatus === "pending" ? (
-                                    <Button className="w-full bg-[#1A6E0A] cursor-not-allowed" disabled>
-                                        Payment processing...Please Wait
-                                    </Button>
+                                {/* Payment Button */}
+                                {paymentStatus === 'pending' ? (
+                                    <Button disabled className="w-full hover:bg-[#254b1d] py-4">Processing Payment...</Button>
                                 ) : (
-                                    <Button
-                                        onClick={() => handlePaymentBtn(studentViewCourseDetails?.pricing)}
-                                        className="w-full bg-[#1A6E0A]"
-                                    >
-                                        Buy Now
+                                    <Button onClick={handlePaymentBtn} className="w-full bg-blue-700 hover:bg-[#254b1d] py-4 uppercase">
+                                        {loading ? 'Processing...' : 'Enroll Now'}
                                     </Button>
                                 )}
+
+                                {/* Pricing Section */}
+                                <div className="my-6 space-y-1">
+                                    <p><strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.standard}</strong>, with premium Features <strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.premium}</strong></p>
+                                    <p className='italic text-sm'>(Limited Offer – 50% Off!)</p>
+                                    {
+                                        studentViewCourseDetails?.heroSection?.features?.map((feature, index) => (
+                                            <p key={index} className=' font-semibold'>🔹  {feature}</p>
+                                        ))
+                                    }
+
+                                </div>
+                                <div className="border rounded-lg overflow-hidden">
+                                    <div className='text-lg font-semibold border-b-2 w-full px-5 py-3 bg-[#1A6E0A] rounded-t-lg text-white'>Modules</div>
+
+                                    <div className="relative">
+                                        <div
+                                            className={`p-4 transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[1000px]' : 'max-h-[250px]'
+                                                } overflow-hidden`}
+                                        >
+                                            {studentViewCourseDetails?.curriculum?.map((lecture, index) => (
+                                                <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-md shadow-sm mb-2">
+                                                    <span className="text-sm font-medium text-gray-800 flex items-center gap-3">
+                                                        <VideoIcon size={20} />
+                                                        <span className='hidden md:block'>Module {index + 1}:</span>
+                                                        <span className='font-normal'>{lecture?.title}</span>
+                                                    </span>
+                                                    {lecture?.freePreview ? (
+                                                        <PlayCircle onClick={() => openPreview(lecture?.videoUrl)} className='cursor-pointer' size={20} />
+                                                    ) : (
+                                                        <Lock size={20} className="text-gray-400" />
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Blur effect when collapsed */}
+                                        {!isExpanded && (
+                                            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                                        )}
+                                    </div>
+
+                                    {/* Toggle button */}
+                                    <div className="flex justify-center py-2">
+                                        <button
+                                            className="text-sm text-green-700 hover:underline"
+                                            onClick={() => setIsExpanded(!isExpanded)}
+                                        >
+                                            {isExpanded ? 'Show Less' : 'Show All'}
+                                        </button>
+                                    </div>
+                                </div>
+
                             </CardContent>
                         </Card>
                     </aside>
@@ -224,10 +349,31 @@ export default function StudentViewCourseDetailsPage() {
             {openModel && (
                 <PaymentModel
                     data={studentViewCourseDetails}
-                    price={studentViewCourseDetails?.pricing}
+                    price={studentViewCourseDetails?.pricing?.standard}
                     setOpenModel={setOpenModel}
                 />
             )}
+
+            {showPreview && (
+                <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+                    <div className="bg-white w-full max-w-3xl p-6 md:p-8 rounded-lg shadow-lg relative">
+                        <button
+                            onClick={closePreview}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-lg"
+                        >
+                            ✖
+                        </button>
+                        <div className="aspect-video w-full">
+                            <VideoPlayer className=' w-full' url={previewUrl || ''} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+            <Footer/>
+
         </>
     );
+
 }

@@ -6,17 +6,6 @@ const token = localStorage.getItem('token');
 const userId = JSON.parse(localStorage.getItem('user'));
 const backendUrl = process.env.REACT_APP_BACKEND;
 
-export const generateReferralLink = async (params) => {
-    const baseUrl = `http://localhost:3000/referralLink`;
-    const query = new URLSearchParams(params);
-
-    if (userId) {
-        query.append('id', userId);
-    }
-
-    return `${baseUrl}?${query.toString()}`;
-};
-
 export const getUserDetails = async () => {
 
     if (!token) {
@@ -71,6 +60,26 @@ export const fetchLeaderboardData = async () => {
         return response.data;
     } catch (err) {
         console.log("Error: ", err.message);
+    }
+}
+
+export const getWalletEarningDetails = async (id) => {
+    try {
+        const data = axios.get(`${backendUrl}/api/user/earning-details/${id}`);
+        return data;
+        
+    } catch (err) {
+        toast.error("Internal Server Error!");
+    }
+}
+
+export const getWalletEarningHistory = async (id) => {
+    try {
+        const data = axios.get(`${backendUrl}/api/user/earning-history/${id}`);
+        return data;
+
+    } catch (err) {
+        toast.error("Internal Server Error!");
     }
 }
 
@@ -189,7 +198,7 @@ export async function markLectureAsViewedService(courseId, lectureId, id) {
     const { data } = await axios.post(
         `${backendUrl}/student/course-progress/mark-lecture-viewed`,
         {
-            userId : id,
+            userId: id,
             courseId,
             lectureId,
         }
@@ -202,7 +211,7 @@ export async function resetCourseProgressService(courseId, id) {
     const { data } = await axios.post(
         `${backendUrl}/student/course-progress/reset-progress`,
         {
-            userId : id,
+            userId: id,
             courseId,
         }
     );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import BlogComponent from './BlogComponent';
+import Footer from '../../components/FooterSection';
 
 export default function Blogs() {
     const [blogs, setBlogs] = useState([]);
@@ -32,22 +33,25 @@ export default function Blogs() {
     }
 
     return (
-        <section className="py-12">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h2 className="font-manrope text-4xl font-bold text-gray-900 text-center mb-14">
-                    Our popular blogs
-                </h2>
+        <>
+            <section className="py-12">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h2 className="font-manrope text-4xl font-bold text-gray-900 text-center mb-14">
+                        Our popular blogs
+                    </h2>
 
-                {blogs.length === 0 ? (
-                    <p className="text-center text-gray-500">No blogs available.</p>
-                ) : (
-                    <div className="flex justify-center gap-y-8 flex-wrap md:gap-6 lg:gap-8">
-                        {blogs.map((blog) => (
-                            <BlogComponent key={blog._id} blog={blog} />
-                        ))}
-                    </div>
-                )}
-            </div>
-        </section>
+                    {blogs.length === 0 ? (
+                        <p className="text-center text-gray-500">No blogs available.</p>
+                    ) : (
+                        <div className="flex justify-center gap-y-8 flex-wrap md:gap-6 lg:gap-8">
+                            {blogs.map((blog) => (
+                                <BlogComponent key={blog._id} blog={blog} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
+            <Footer />
+        </>
     );
 }

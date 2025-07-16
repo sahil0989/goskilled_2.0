@@ -5,7 +5,6 @@ import logo_full from "../images/logo_full.png"
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../@/components/ui/button';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'sonner';
 import { User2Icon } from 'lucide-react';
 
 const Navbar = () => {
@@ -45,17 +44,19 @@ const Navbar = () => {
                             <Link to="/about">About</Link>
                         </div>
                         <div className=' cursor-pointer font-semibold'>
-                            <Link to="/questions">FAQ</Link>
-                        </div>
-                        <div className=' cursor-pointer font-semibold'>
                             <Link to="/contact">Contact Us</Link>
                         </div>
                     </div>
 
                     <div className='flex items-center gap-5'>
-                        <div onClick={() => setUserDashboardSidebar(!userDashboardSidebar)} className={`md:hidden bg-[#1A6E0A] text-white p-2 rounded-full ${url.pathname !== '/dashboard' ? 'hidden' : ''}`}>
+                        <div
+                            onClick={() => setUserDashboardSidebar(!userDashboardSidebar)}
+                            className={`md:hidden bg-[#1A6E0A] text-white p-2 rounded-full ${(url.pathname !== '/dashboard' && !url.pathname.startsWith('/meetings/')) ? 'hidden' : ''
+                                }`}
+                        >
                             <User2Icon />
                         </div>
+
                         {
                             !navOpen && <CgMenuRightAlt onClick={() => setNavOpen(!navOpen)} className='lg:hidden text-black' size={26} />
                         }
@@ -95,9 +96,6 @@ const Navbar = () => {
                         </div>
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>
                             <Link onClick={() => setNavOpen(false)} to="/blogs">Blogs</Link>
-                        </div>
-                        <div className=' cursor-pointer font-semibold py-2 pl-6'>
-                            <Link onClick={() => setNavOpen(false)} to="/questions">FAQ</Link>
                         </div>
                         <hr className='w-full' />
                         <div className=' cursor-pointer font-semibold py-2 pl-6'>

@@ -3,7 +3,7 @@ import ZoomMeetingCard from './MeetingsComp';
 import { getMeetings } from './meetingServices';
 import { toast } from 'sonner';
 
-export default function MeetingPage() {
+export default function MeetingPage({ setActiveTab, setCourseId }) {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +36,7 @@ export default function MeetingPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {meetings.map((meeting) => (
-            <ZoomMeetingCard key={meeting._id} meeting={meeting} />
+            <ZoomMeetingCard key={meeting._id} meeting={meeting} setActiveTab={setActiveTab} setCourseId={setCourseId} />
           ))}
         </div>
       )}

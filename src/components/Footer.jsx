@@ -22,7 +22,7 @@ export default function Footer() {
                     </div>
 
                     <div className='flex flex-col gap-2'>
-                        <h2 className='text-xl font-bold'>Useful Links</h2>
+                        <h2 className='text-xl font-bold'>Contact Us</h2>
                         <p className=' cursor-pointer'>Blogs</p>
                         <p className=' cursor-pointer'>About Us</p>
                         <p className=' cursor-pointer'>Privacy & Policy</p>

@@ -4,24 +4,45 @@ import UserDetails from './UserDetails';
 import UserCourses from './userCourses';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { fetchLeaderboardData, fetchReferredUser, submitKYCDetails } from '../../api/ApiCall';
+import { fetchLeaderboardData, fetchReferredUser, getWalletEarningDetails, getWalletEarningHistory, submitKYCDetails } from '../../api/ApiCall';
 import UserLeaderboard from './UserLeaderboard';
 import UserReferrals from './UserReferrals';
 import UserWallet from './UserWallet';
 import axios from 'axios';
 import { toast } from 'sonner';
 import MeetingPage from '../meetings/MeetingPage';
+import MeetingDetails from '../meetings/MeetingDetails';
+import { useStudent } from '../../context/student-context/StudentContext';
+import FAQ from '../Faq';
+import ReferralCards from '../../components/ReferralCards';
+import {
+  LayoutDashboard,
+  BadgeCheck,
+  BookOpen,
+  Users,
+  Wallet,
+  BarChart,
+  CalendarDays,
+  HelpCircle,
+  CreditCard,
+} from 'lucide-react';
 
 const UserDashboard = () => {
 
   const { user, getUserData, userDashboardSidebar, setUserDashboardSidebar, getLeaderboard } = useAuth()
+  const { studentViewCoursesList } = useStudent()
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [kycVerified, setKycVerified] = useState(false);
+  const [earningDetails, setEarningDetails] = useState(null);
+  const [earningHistory, setEarningHistory] = useState([]);
   const [redeemHistory, setRedeemHistory] = useState([]);
   const [leaderboard, setLeaderboard] = useState(null);
   const [referredUser, setReferredUser] = useState(null);
+  const [courseId, setCourseId] = useState(null)
+  const [purchasedCoursesData, setPurchasedCoursesData] = useState([]);
+  const [notPurchasedCoursesData, setNotPurchasedCoursesData] = useState([]);
 
   useEffect(() => {
     const handleLogin = async () => {
@@ -45,7 +66,18 @@ const UserDashboard = () => {
     const fetchWalletData = async () => {
       try {
         await getLeaderboard();
+
         const res = await axios.get(`${process.env.REACT_APP_BACKEND}/api/wallet/details/${user?._id}`);
+
+        const wallet = await getWalletEarningDetails(user?._id);
+        const his = await getWalletEarningHistory(user?._id);
+
+        if (wallet?.data?.success) {
+          setEarningDetails(wallet?.data?.earnings)
+        }
+        if (his?.data?.success) {
+          setEarningHistory(his?.data?.history);
+        }
         setRedeemHistory(Array?.isArray(res?.data?.history) ? res?.data?.history : []);
       } catch (err) {
         toast.error('Failed to load wallet data.');
@@ -55,6 +87,25 @@ const UserDashboard = () => {
     if (user?._id) fetchWalletData();
     // eslint-disable-next-line
   }, [user]);
+
+  useEffect(() => {
+    const sortPurchasedCourse = () => {
+      const purchasedCourseIds = user?.purchasedCourses || [];
+
+      const purchasedCourses = studentViewCoursesList.filter(course =>
+        purchasedCourseIds.includes(course._id)
+      );
+
+      const notPurchasedCourses = studentViewCoursesList.filter(course =>
+        !purchasedCourseIds.includes(course._id)
+      );
+
+      setPurchasedCoursesData(purchasedCourses);
+      setNotPurchasedCoursesData(notPurchasedCourses);
+    }
+
+    if (studentViewCoursesList) sortPurchasedCourse();
+  }, [studentViewCoursesList])
 
   const handleVerifyKYC = async (data) => {
     setKycVerified(true);
@@ -85,13 +136,15 @@ const UserDashboard = () => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: '🏠' },
-    { name: 'Referrals', icon: '👥' },
-    { name: 'Wallet', icon: '🪙' },
-    { name: 'Our Meetings', icon: '📅' },
-    { name: 'Leaderboard', icon: '📊' },
-    { name: 'Courses', icon: '📚' },
-    { name: 'KYC Verification', icon: '🆔' },
+    { name: 'Dashboard', icon: LayoutDashboard },
+    { name: 'KYC Verification', icon: BadgeCheck },
+    { name: 'Courses', icon: BookOpen },
+    { name: 'Referrals', icon: Users },
+    { name: 'Wallet', icon: Wallet },
+    { name: 'Leaderboard', icon: BarChart },
+    { name: 'Our Meetings', icon: CalendarDays },
+    { name: 'FAQ', icon: HelpCircle },
+    { name: 'Commision Structure', icon: CreditCard },
   ];
 
   return (
@@ -103,18 +156,17 @@ const UserDashboard = () => {
         </div>
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
-            {menuItems?.map((item) => (
-              <li key={item?.name}>
-                <button
-                  onClick={() => setActiveTab(item?.name)}
-                  className={`w-full flex items-center justify-center md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item?.name ? 'bg-[#1a4d10]/90 text-white' : 'hover:bg-[#1a4d10] hover:text-white'
-                    }`}
-                >
-                  <span>{item?.icon}</span>
-                  <span className='hidden md:block'>{item?.name}</span>
-                </button>
-              </li>
-            ))}
+            <ul className="space-y-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li key={item.name} className="flex items-center gap-2 px-4 py-2 cursor-pointer">
+                    <Icon size={18} />
+                    <span>{item.name}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </ul>
         </nav>
       </aside>
@@ -128,51 +180,65 @@ const UserDashboard = () => {
         </div>
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
-            {menuItems?.map((item) => (
-              <li key={item?.name} className='text-sm'>
-                <button
-                  onClick={() => {
-                    setActiveTab(item?.name);
-                    setUserDashboardSidebar(false);
-                  }}
-                  className={`w-full flex items-center flex-nowrap md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item?.name
-                    ? 'bg-[#1a4d10]/90 text-white'
-                    : 'hover:bg-[#1a4d10] hover:text-white'
-                    }`}
-                >
-                  <span>{item?.icon}</span>
-                  <span>{item?.name}</span>
-                </button>
-              </li>
-            ))}
+            {menuItems?.map((item) => {
+              const Icon = item.icon; // ✅ Extract the icon component
+              return (
+                <li key={item?.name} className="text-sm">
+                  <button
+                    onClick={() => {
+                      setActiveTab(item?.name);
+                      setUserDashboardSidebar(false);
+                    }}
+                    className={`w-full flex items-center flex-nowrap md:justify-start gap-3 px-4 py-2 rounded-md ${activeTab === item?.name
+                      ? 'bg-[#1a4d10]/90 text-white'
+                      : 'hover:bg-[#1a4d10] hover:text-white'
+                      }`}
+                  >
+                    <Icon size={18} /> {/* ✅ Use the icon as a component */}
+                    <span>{item?.name}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 h-[calc(100vh-80px)] overflow-scroll p-4 md:p-6">
-        <h1 className="text-3xl font-bold mb-6 capitalize">{activeTab}</h1>
+        {activeTab !== 'FAQ' && (
+          <h1 className="text-3xl font-bold mb-6 capitalize">{activeTab}</h1>
+        )}
 
-        {activeTab === 'Dashboard' && <UserDetails user={user} kycVerified={kycVerified} setActiveTab={setActiveTab} />}
+        {activeTab === 'Dashboard' && <UserDetails earningDetails={earningDetails} user={user} kycVerified={kycVerified} setActiveTab={setActiveTab} />}
 
-        {activeTab === 'Courses' && (<UserCourses />)}
+        {activeTab === 'Courses' && (<UserCourses purchasedCoursesData={purchasedCoursesData} notPurchasedCoursesData={notPurchasedCoursesData} />)}
 
         {activeTab === 'Wallet' && (
           <UserWallet
+            earningDetails={earningDetails}
             user={user}
             wallet={user?.wallet}
             redeemHistory={redeemHistory}
             handleRedeem={handleRedeem}
+            earningHistory={earningHistory}
           />
         )}
 
         {activeTab === 'Referrals' && (<UserReferrals referrals={referredUser?.referrals} username={user?.name} />)}
 
-        {activeTab === 'Our Meetings' && <MeetingPage userId={user?._id} />}
+        {activeTab === 'Our Meetings' && <MeetingPage userId={user?._id} setCourseId={setCourseId} setActiveTab={setActiveTab} />}
 
         {activeTab === 'Leaderboard' && (<UserLeaderboard currentUser={user} users={leaderboard?.data} />)}
 
         {activeTab === 'KYC Verification' && (<UserKYCDetails user={user} kycVerified={kycVerified} handleVerifyKYC={handleVerifyKYC} />)}
+
+        {activeTab === 'Meeting' && (<MeetingDetails id={courseId} setActiveTab={setActiveTab} />)}
+
+        {activeTab === 'FAQ' && (<FAQ />)}
+
+        {activeTab === 'Commision Structure' && (<ReferralCards />)}
+
       </main>
     </div>
   );

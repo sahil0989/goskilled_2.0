@@ -32,12 +32,14 @@ export default function UserReferrals({ referrals, username }) {
         let rows = [];
 
         if (activeTab === 'Level 1') {
-            headers = ['Name', 'Email', 'Phone', 'Unique Code'];
+            headers = ['Name', 'Email', 'Phone', 'Unique Code', 'Direct Referrals'];
             rows = data?.map(item => [
                 item?.name,
                 item?.email,
                 item?.mobileNumber,
-                item?._id,
+                item?.referralCode,
+                item?.referralLevels?.level1?.length,
+                item?.wallet?.totalEarned,
             ]);
         } else {
             headers = ['Name', 'Email', 'Referred By'];
@@ -86,15 +88,19 @@ export default function UserReferrals({ referrals, username }) {
         if (activeTab === 'Level 1') {
             return (
                 <tr className="bg-gray-100">
+                    <th className="p-2 text-sm">S. No.</th>
                     <th className="p-2 text-sm">Name</th>
                     <th className="p-2 text-sm">Email</th>
                     <th className="p-2 text-sm">Phone</th>
                     <th className="p-2 text-sm">Unique Code</th>
+                    <th className="p-2 text-sm">Direct Referrals</th>
+                    <th className="p-2 text-sm">Total Earning</th>
                 </tr>
             );
         }
         return (
             <tr className="bg-gray-100">
+                <th className="p-2 text-sm">S.No.</th>
                 <th className="p-2 text-sm">Name</th>
                 <th className="p-2 text-sm">Email</th>
                 <th className="p-2 text-sm">Referred By</th>
@@ -103,14 +109,19 @@ export default function UserReferrals({ referrals, username }) {
     };
 
     const renderTableBody = () => {
-        return paginatedData?.map((item) => (
+        return paginatedData?.map((item, index) => (
             <tr key={item?._id} className="border-t">
+                <td className="p-2 text-sm font-medium text-gray-700">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-2 text-sm">{item?.name}</td>
                 <td className="p-2 text-sm">{item?.email}</td>
                 {activeTab === 'Level 1' ? (
                     <>
                         <td className="p-2 text-sm">{item?.mobileNumber}</td>
-                        <td className="p-2 text-sm">{item?._id}</td>
+                        <td className="p-2 text-sm">{item?.referralCode}</td>
+                        <td className="p-2 text-sm">{item?.referralLevels?.level1?.length}</td>
+                        <td className="p-2 text-sm">{item?.wallet?.totalEarned}</td>
                     </>
                 ) : (
                     <td className="p-2 text-sm">{item?.referredBy?.name || '-'}</td>
@@ -125,6 +136,12 @@ export default function UserReferrals({ referrals, username }) {
                 User Referrals
             </h2>
 
+            <div className='flex flex-col md:flex-row w-full py-4 gap-2 text-white'>
+                <div className=' w-full px-6 py-6 border-2 border-orange-600 bg-orange-500 rounded-lg flex justify-center text-xl font-semibold'>Level 1 : {referrals?.level1?.length}</div>
+                <div className=' w-full px-6 py-6 border-2 border-purple-800 bg-purple-700 rounded-lg flex justify-center text-xl font-semibold'>Level 2 : {referrals?.level2?.length}</div>
+                <div className=' w-full px-6 py-6 border-2 border-blue-600 bg-blue-500 rounded-lg flex justify-center text-xl font-semibold'>Level 3 : {referrals?.level3?.length}</div>
+            </div>
+
             {/* Tabs and controls */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-4">
                 <div className="flex flex-wrap gap-2">
@@ -136,8 +153,8 @@ export default function UserReferrals({ referrals, username }) {
                                 setCurrentPage(1);
                             }}
                             className={`px-3 py-1 text-sm rounded ${activeTab === tab
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200 text-gray-700'
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-gray-200 text-gray-700'
                                 }`}
                         >
                             {tab}

@@ -9,7 +9,6 @@ import element2 from "../images/elements/2.png"
 import { Button } from '../@/components/ui/button'
 import CourseBlock from '../components/CourseBlock';
 import element3 from "../images/elements/3.png"
-import Footer from '../components/Footer'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import course1 from "../images/courses/1.png"
@@ -17,6 +16,7 @@ import course2 from "../images/courses/2.png"
 import { useAuth } from '../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion';
 import { GiftIcon } from 'lucide-react'
+import Footer from '../components/FooterSection'
 
 export default function Home() {
 
@@ -39,28 +39,28 @@ export default function Home() {
 
     const testimonials = [
         {
-            text: `I joined GoSkilled to learn digital marketing, but I never expected I could also start earning while learning! Within my first month, I was able to generate ₹27,500 just by applying the skills I gained.`,
-            name: '– Rohan, Delhi',
+            text: `A platform like GoSkilled was genuinely missing — it focuses on building skills with actual direction.`,
+            name: '– Aayush, Graduate',
         },
         {
-            text: `The hands-on approach was amazing. I built my portfolio and landed freelance gigs within weeks. Highly recommend it!`,
-            name: '– Aarti, Mumbai',
+            text: `GoSkilled brings a very fresh approach. It doesn’t just teach — it opens real opportunities for growth.`,
+            name: '– Sneha, Digital Learner',
         },
         {
-            text: `From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.`,
-            name: '– Sahil, Bengaluru',
+            text: `Today, we don’t just need certificates. We need clarity, support, and action. GoSkilled checks those boxes.`,
+            name: '– Tushar, MBA Aspirant',
         },
         {
-            text: `From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.`,
-            name: '–Sahil, Bengaluru',
+            text: `The moment I saw the structure, I felt — finally, something that isn’t just about watching videos.`,
+            name: '– Ishita, Self-Learner',
         },
         {
-            text: `From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.`,
-            name: '– Rahul, Bengaluru',
+            text: `GoSkilled feels like it was built for learners like us — simple, clear, and genuinely helpful.`,
+            name: '– Meenal, Intern',
         },
         {
-            text: `From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.From beginner to confident freelancer in 2 months! The mentorship was the game-changer.`,
-            name: '– Himashi, Bengaluru',
+            text: `In a market full of theory-heavy platforms, GoSkilled stands out with its practical mindset.`,
+            name: '– Rajat, First-time Creator',
         },
     ];
 
@@ -115,7 +115,7 @@ export default function Home() {
 
                 {/* Number section  */}
                 <div className='p-12 rounded-lg'>
-                    <div className='bg-[#fcfcfc] w-full py-5 flex justify-around rounded-lg shadow-md'>
+                    <div className='bg-[#fcfcfc] w-full py-5 flex justify-around rounded-lg shadow-md border border-green-600'>
                         <div className='flex flex-col items-center'>
                             <h1 className='text-4xl font-bold text-[#F7AD05]'>100+</h1>
                             <p>Students</p>
@@ -228,11 +228,9 @@ export default function Home() {
             <div>
                 <div className='flex flex-col md:flex-row gap-5 items-center justify-around bg-[#1A6E0A]/50 py-8'>
                     <div className='w-full px-6 md:max-w-[550px]'>
-                        <h2 className='text-2xl md:text-4xl font-bold'><span className='relative'>Testimonials
-                            <img src={element7} alt='' className='absolute top-6 skew-y-6' />
-                        </span> What's Our</h2>
-                        <br />
-                        <h2 className='text-2xl md:text-4xl font-bold'>Students Say</h2>
+                        <h2 className='text-2xl md:text-4xl font-bold'><span className='relative'>Feedbacks
+                            <img src={element7} alt='' className='absolute top-7 skew-y-6' />
+                        </span></h2>
 
                         {/* testimonial data  */}
                         <br /><br />
