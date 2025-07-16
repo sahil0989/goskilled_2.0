@@ -71,11 +71,11 @@ export default function StudentProgress() {
         async function fetchProgress() {
             setLoading(true);
             if (!user) {
-                // const userId = localStorage.getItem('user')
-                // if (!userId) {
-                //     navigate('/auth/login');
-                //     return;
-                // }
+                const userId = localStorage.getItem('user')
+                if (!userId) {
+                    navigate('/auth/login');
+                    return;
+                }
             }
 
             try {
