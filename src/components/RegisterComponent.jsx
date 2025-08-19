@@ -112,13 +112,14 @@ const RegisterComponent = () => {
         data
       );
 
-      updatePhoneData({
-        otpSent: true,
-        mobileNumber: data?.mobileNumber,
-        timer: 60,
-        canResend: false,
-      });
-      toast.success("Registration Successfully!! Please verify your Number")
+      // updatePhoneData({
+      //   otpSent: true,
+      //   mobileNumber: data?.mobileNumber,
+      //   timer: 60,
+      //   canResend: false,
+      // });
+      navigate("/dashboard"); // extra 
+      // toast.success("Registration Successfully!! Please verify your Number")
     } catch (err) {
       toast.error(err.response?.data?.message)
     } finally {

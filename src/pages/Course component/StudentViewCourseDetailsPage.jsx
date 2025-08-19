@@ -20,6 +20,7 @@ import Footer from '../../components/FooterSection';
 
 export default function StudentViewCourseDetailsPage() {
     const [openModel, setOpenModel] = useState(false);
+    const [enrolled, setEnrolled] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState('not_found');
     const [canPurchase, setCanPurchase] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -50,18 +51,18 @@ export default function StudentViewCourseDetailsPage() {
                 const paymentResp = await checkPaymentStatus(formData);
                 setPaymentStatus(paymentResp?.status || 'not_found');
 
+                const response = await checkEnrolledCourse(user?._id);
+                setEnrolled(response.enrolled);
+
                 const pendingResp = await checkPendingPayment(user._id);
                 setCanPurchase(pendingResp?.canPurchase ?? true);
             } catch (error) {
                 console.error('Error checking payment status:', error);
-                // Optionally show toast here
             }
         };
         checkUserPaymentStatus();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, id]);
 
-    // Fetch course details by ID
     useEffect(() => {
         if (!id) return;
 
@@ -279,6 +280,10 @@ export default function StudentViewCourseDetailsPage() {
                                     </div>
                                 </div>
 
+                                {
+                                    paymentStatus === 'rejected' && <div className='w-full flex justify-center py-2 text-xs text-red-600'>Previous Payment is rejected. Please Pay Again</div>
+                                }
+
                                 {/* Payment Button */}
                                 {paymentStatus === 'pending' ? (
                                     <Button disabled className="w-full hover:bg-[#254b1d] py-4">Processing Payment...</Button>
@@ -290,7 +295,13 @@ export default function StudentViewCourseDetailsPage() {
 
                                 {/* Pricing Section */}
                                 <div className="my-6 space-y-1">
-                                    <p><strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.standard}</strong>, with premium Features <strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.premium}</strong></p>
+                                    {
+                                        enrolled ? (<p>
+                                            <strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.standard}</strong>
+                                        </p>) : (
+                                            <p><strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.standard}</strong>, with premium Features <strong className=' text-xl'>₹{studentViewCourseDetails?.pricing?.premium}</strong></p>
+                                        )
+                                    }
                                     <p className='italic text-sm'>(Limited Offer – 50% Off!)</p>
                                     {
                                         studentViewCourseDetails?.heroSection?.features?.map((feature, index) => (
@@ -371,7 +382,7 @@ export default function StudentViewCourseDetailsPage() {
             )}
 
 
-            <Footer/>
+            <Footer />
 
         </>
     );

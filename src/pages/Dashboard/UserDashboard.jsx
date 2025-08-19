@@ -189,7 +189,7 @@ const UserDashboard = () => {
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
             {menuItems?.map((item) => {
-              const Icon = item.icon; // ✅ Extract the icon component
+              const Icon = item.icon; 
               return (
                 <li key={item?.name} className="text-sm">
                   <button
@@ -202,7 +202,7 @@ const UserDashboard = () => {
                       : 'hover:bg-[#1a4d10] hover:text-white'
                       }`}
                   >
-                    <Icon size={18} /> {/* ✅ Use the icon as a component */}
+                    <Icon size={18} />
                     <span>{item?.name}</span>
                   </button>
                 </li>

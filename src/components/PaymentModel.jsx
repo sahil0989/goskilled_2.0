@@ -142,10 +142,7 @@ export default function PaymentModel({ data, setOpenModel, courseType, price }) 
                     Total Amount:
                 </h2>
                 <div className="px-6 text-sm md:text-base font-medium mb-4">
-                    <p className="text-green-700">Standard – Rs. {data?.pricing?.standard || price}</p>
-                    {data?.pricing?.premium && (
-                        <p className="text-blue-700 mt-1">Premium – Rs. {data.pricing.premium}</p>
-                    )}
+                    <p className="text-green-700">Pricing – Rs. {data?.pricing?.standard || price}</p>
                 </div>
 
                 {/* Upload progress bar */}
