@@ -23,6 +23,7 @@ import RefundCancellation from "./pages/RefundCancellation";
 import StudentProgress from "./pages/Course component/StudentProgress";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentReject from "./pages/payment/PaymentReject";
 // import VideoPlayer from "./pages/trial/VideoPlayer";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
               <Route path="/student/course-order" element={<OfferPurchase />} />
               <Route path="/payment" element={<PaymentPage />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/payment-failed" element={<PaymentReject />} />
               <Route path="/about" element={<About />} />
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/blogs/:id" element={<BlogDetailPage />} />
