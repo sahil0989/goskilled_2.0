@@ -82,6 +82,8 @@ export default function Home() {
         }
     }
 
+    console.log("React Backend: ", process.env.REACT_APP_FRONTEND)
+
     return (
         <div>
 
