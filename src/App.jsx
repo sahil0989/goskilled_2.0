@@ -17,13 +17,11 @@ import OfferPurchase from "./pages/CourseOrder";
 import { InstructorProvider } from "./context/media-context/mediaContext";
 import Blogs from "./pages/blogs/Blogs";
 import BlogDetailPage from "./pages/blogs/BlogPage";
-import MeetingPage from "./pages/meetings/MeetingPage";
-import MeetingDetails from "./pages/meetings/MeetingDetails";
-import FAQ from "./pages/Faq";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/Terms&Conditions";
 import RefundCancellation from "./pages/RefundCancellation";
 import StudentProgress from "./pages/Course component/StudentProgress";
+import PaymentPage from "./pages/payment/PaymentPage";
 // import VideoPlayer from "./pages/trial/VideoPlayer";
 
 function App() {
@@ -42,6 +40,7 @@ function App() {
               <Route path="/course-details/:id" element={<StudentViewCourseDetailsPage />} />
               <Route path="/course-progress/:id" element={<StudentProgress />} />
               <Route path="/student/course-order" element={<OfferPurchase />} />
+              <Route path="/payment" element={<PaymentPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/blogs/:id" element={<BlogDetailPage />} />

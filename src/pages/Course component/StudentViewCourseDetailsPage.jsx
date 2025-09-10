@@ -12,6 +12,7 @@ import {
     checkEnrolledCourse,
     checkPaymentStatus,
     checkPendingPayment,
+    createPayment,
     fetchStudentViewCourseDetailsService
 } from '../../api/ApiCall';
 import VideoPlayer from '../trial/VideoPlayer';
@@ -113,9 +114,36 @@ export default function StudentViewCourseDetailsPage() {
         setLoading(true);
         try {
             const userId = user?._id;
+
+            const courseData = {
+                name: studentViewCourseDetails.title,
+                id: studentViewCourseDetails._id,
+                pricing: studentViewCourseDetails.pricing.standard
+            }
+
+            const data = {
+                userId: user._id,
+                email: user.email,
+                mobileNumber: user.mobileNumber,
+                courses: courseData,
+                amount: studentViewCourseDetails.pricing.standard,
+                packageType: "Skill Builder"
+            }
+
             const response = await checkEnrolledCourse(userId);
             if (response?.enrolled) {
                 setOpenModel(true);
+                const result = await createPayment(data);
+                if (result.success) {
+                    navigate('/payment', {
+                        state: {
+                            orderId: result.order.order_id,
+                            paymentSessionId: result.order.payment_session_id,
+                            userData: data
+                        }
+                    })
+                }
+                console.log(result);
             } else {
                 navigate('/student/course-order');
             }
@@ -138,8 +166,6 @@ export default function StudentViewCourseDetailsPage() {
         setShowPreview(false);
         setPreviewUrl("");
     };
-
-    console.log("Student: ", studentViewCourseDetails)
 
     return (
 

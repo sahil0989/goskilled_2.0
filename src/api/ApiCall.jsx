@@ -67,7 +67,7 @@ export const getWalletEarningDetails = async (id) => {
     try {
         const data = axios.get(`${backendUrl}/api/user/earning-details/${id}`);
         return data;
-        
+
     } catch (err) {
         toast.error("Internal Server Error!");
     }
@@ -241,6 +241,14 @@ export async function checkPendingPayment(id) {
 
 export async function paymentSubmitService(formData) {
     const { data } = await axios.post(`${backendUrl}/api/payment/submit`, formData)
+
+    return data;
+}
+
+// paymentGateway
+
+export async function createPayment(formData) {
+    const { data } = await axios.post(`${backendUrl}/user/payment/submit`, formData)
 
     return data;
 }
