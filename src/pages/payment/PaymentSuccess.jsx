@@ -22,19 +22,9 @@ const PaymentSuccess = () => {
     try {
       // Single API call: verify payment and get booking data
       console.log("OrderId: ", orderId)
-      const response = await fetch('http://localhost:5000/api/payment/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId })
-      });
+      const data = await verifyPayment(orderId);
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setBooking(data.booking);
-      } else {
-        setError(data.message || 'Payment verification failed');
-      }
+      console.log("Verifying Data: ", data);
     } catch {
       setError('Failed to verify payment');
     } finally {

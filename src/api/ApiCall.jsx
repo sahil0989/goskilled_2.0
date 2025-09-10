@@ -252,3 +252,9 @@ export async function createPayment(formData) {
 
     return data;
 }
+
+export async function verifyPayment(orderId) {
+    const {data} = await axios.post(`${backendUrl}/user/payment/verify`, orderId);
+
+    return data;
+}
