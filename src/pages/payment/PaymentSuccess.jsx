@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { verifyPaymentApi } from '../../api/ApiCall';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -22,7 +23,7 @@ const PaymentSuccess = () => {
     try {
       // Single API call: verify payment and get booking data
       console.log("OrderId: ", orderId)
-      const data = await verifyPayment(orderId);
+      const response = await verifyPaymentApi(orderId);
 
       console.log("Verifying Data: ", data);
     } catch {
