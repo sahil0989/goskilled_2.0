@@ -21,7 +21,6 @@ const PaymentSuccess = () => {
 
     const verifyPayment = async () => {
         try {
-            console.log("OrderId: ", orderId);
             const response = await verifyPaymentApi(orderId);
 
             console.log("Verifying Data: ", response);
