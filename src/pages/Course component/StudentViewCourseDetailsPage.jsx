@@ -121,6 +121,10 @@ export default function StudentViewCourseDetailsPage() {
                 pricing: studentViewCourseDetails.pricing.standard
             }
 
+            console.log('Course Data: ', courseData);
+
+            console.log("Student View Data: ", studentViewCourseDetails)
+
             const data = {
                 userId: user._id,
                 email: user.email,
