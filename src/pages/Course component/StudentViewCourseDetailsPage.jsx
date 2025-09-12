@@ -135,22 +135,22 @@ export default function StudentViewCourseDetailsPage() {
             }
 
             const response = await checkEnrolledCourse(userId);
-            // if (response?.enrolled) {
-            //     setOpenModel(true);
-            //     const result = await createPayment(data);
-            //     if (result.success) {
-            //         navigate('/payment', {
-            //             state: {
-            //                 orderId: result.order.order_id,
-            //                 paymentSessionId: result.order.payment_session_id,
-            //                 userData: data
-            //             }
-            //         })
-            //     }
-            //     console.log(result);
-            // } else {
-            //     navigate('/student/course-order');
-            // }
+            if (response?.enrolled) {
+                setOpenModel(true);
+                const result = await createPayment(data);
+                if (result.success) {
+                    navigate('/payment', {
+                        state: {
+                            orderId: result.order.order_id,
+                            paymentSessionId: result.order.payment_session_id,
+                            userData: data
+                        }
+                    })
+                }
+                console.log(result);
+            } else {
+                navigate('/student/course-order');
+            }
         } catch (error) {
             console.error('Error checking enrollment:', error);
             toast.error('Something went wrong. Please try again.');
