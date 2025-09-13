@@ -23,7 +23,7 @@ const PaymentSuccess = () => {
         try {
             const response = await verifyPaymentApi(orderId);
 
-            console.log("Verifying Data: ", response);
+            console.log("Verifying Data : ", response);
 
             if (response.success && (response.status === "SUCCESS" || response.status === "PAID")) {
                 setBooking(response.payment);
