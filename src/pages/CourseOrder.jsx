@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PaymentModel from "../components/PaymentModel";
-import { checkEnrolledCourse, fetchStudentViewCourseListService } from "../api/ApiCall";
+import { checkEnrolledCourse, createPayment, fetchStudentViewCourseListService } from "../api/ApiCall";
 
 const GST_PERCENT = 0.18;
 
