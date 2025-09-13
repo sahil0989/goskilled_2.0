@@ -90,7 +90,18 @@ const OfferPurchase = () => {
       id: course._id,
     }));
 
-    console.log("Couse data: ", courseData);
+    const packageName = courseType === "skill" ? "Skill Builder" : "Career Booster";
+
+    const data = {
+      userId: user._id,
+      email: user.email,
+      mobileNumber: user.mobileNumber,
+      courses: courseData,
+      amount: studentViewCourseDetails.pricing.standard,
+      packageType: packageName
+    }
+
+    console.log("Couse data: ", data);
   };
 
   if (loading) return null;
