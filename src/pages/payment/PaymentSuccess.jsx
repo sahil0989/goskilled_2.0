@@ -26,7 +26,7 @@ const PaymentSuccess = () => {
             console.log("Verifying Data: ", response);
 
             if (response.success && (response.status === "SUCCESS" || response.status === "PAID")) {
-                setBooking(response.payment); // or booking data
+                setBooking(response.payment);
             } else if (response.status === "FAILED" || response.status === "CANCELLED") {
                 setError("Your payment was cancelled or failed. Please try again.");
             } else {
