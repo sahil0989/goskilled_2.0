@@ -30,7 +30,7 @@ const OfferPurchase = () => {
     // eslint-disable-next-line
   }, [user]);
 
-  const loadOffers = async (currentUser) => {
+  const loadOffers = async () => {
     try {
       const userId = user?._id;
       const enrolled = await checkEnrolledCourse(userId);
@@ -84,7 +84,7 @@ const OfferPurchase = () => {
       alert("Please select at least one course.");
       return;
     }
-    setOpenModel(true);
+    console.log("Couse data: ", selectedOffers);
   };
 
   if (loading) return null;
@@ -115,11 +115,10 @@ const OfferPurchase = () => {
               {offersList.map((offer) => (
                 <li
                   key={offer._id}
-                  className={`px-3 py-2 md:py-3 rounded-xl text-sm cursor-pointer flex justify-between items-center transition ${
-                    isSelected(offer._id)
+                  className={`px-3 py-2 md:py-3 rounded-xl text-sm cursor-pointer flex justify-between items-center transition ${isSelected(offer._id)
                       ? "bg-green-100 border-2 border-green-400"
                       : "bg-gray-50 hover:bg-gray-200"
-                  }`}
+                    }`}
                   onClick={() => handleSelect(offer)}
                 >
                   <span>{offer.title}</span>
