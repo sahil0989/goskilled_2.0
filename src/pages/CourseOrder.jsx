@@ -97,7 +97,7 @@ const OfferPurchase = () => {
       email: user.email,
       mobileNumber: user.mobileNumber,
       courses: courseData,
-      amount: studentViewCourseDetails.pricing.standard,
+      amount: calculateTotal(),
       packageType: packageName
     }
 
