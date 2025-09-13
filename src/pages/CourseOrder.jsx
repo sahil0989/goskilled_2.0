@@ -79,7 +79,7 @@ const OfferPurchase = () => {
     return total.toFixed(2);
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!selectedOffers.length) {
       alert("Please select at least one course.");
       return;
@@ -101,7 +101,16 @@ const OfferPurchase = () => {
       packageType: packageName
     }
 
-    console.log("Couse data: ", data);
+    const result = await createPayment(data);
+    if (result.success) {
+      navigate('/payment', {
+        state: {
+          orderId: result.order.order_id,
+          paymentSessionId: result.order.payment_session_id,
+          userData: data
+        }
+      })
+    }
   };
 
   if (loading) return null;
