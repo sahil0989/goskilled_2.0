@@ -84,7 +84,13 @@ const OfferPurchase = () => {
       alert("Please select at least one course.");
       return;
     }
-    console.log("Couse data: ", selectedOffers);
+
+    const courseData = selectedOffers.map(course => ({
+      name: course.title,
+      id: course._id,
+    }));
+
+    console.log("Couse data: ", courseData);
   };
 
   if (loading) return null;
@@ -116,8 +122,8 @@ const OfferPurchase = () => {
                 <li
                   key={offer._id}
                   className={`px-3 py-2 md:py-3 rounded-xl text-sm cursor-pointer flex justify-between items-center transition ${isSelected(offer._id)
-                      ? "bg-green-100 border-2 border-green-400"
-                      : "bg-gray-50 hover:bg-gray-200"
+                    ? "bg-green-100 border-2 border-green-400"
+                    : "bg-gray-50 hover:bg-gray-200"
                     }`}
                   onClick={() => handleSelect(offer)}
                 >
