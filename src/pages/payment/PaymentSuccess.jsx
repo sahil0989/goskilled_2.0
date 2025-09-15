@@ -19,6 +19,36 @@ const PaymentSuccess = () => {
         }
     }, [orderId]);
 
+    const getPaymentMethodDetails = (payment) => {
+        if (!payment?.responseData?.payments?.[0]?.payment_method) return null;
+
+        const method = payment.responseData.payments[0].payment_method;
+
+        if (method.card) {
+            return {
+                type: "Card",
+                details: `${method.card.card_network.toUpperCase()} (${method.card.card_bank_name}) • ${method.card.card_number}`
+            };
+        }
+
+        if (method.netbanking) {
+            return {
+                type: "NetBanking",
+                details: `${method.netbanking.netbanking_bank_name} (Code: ${method.netbanking.netbanking_bank_code})`
+            };
+        }
+
+        if (method.upi) {
+            return {
+                type: "UPI",
+                details: method.upi.upi_vpa || "UPI Payment"
+            };
+        }
+
+        return { type: "Unknown", details: "N/A" };
+    };
+
+
     const verifyPayment = async () => {
         try {
             const response = await verifyPaymentApi(orderId);
@@ -110,32 +140,15 @@ const PaymentSuccess = () => {
                                     <span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}
                                 </div>
 
-                                {booking.responseData?.order?.customer_details && (
-                                    <>
+                                {(() => {
+                                    const method = getPaymentMethodDetails(booking);
+                                    return method ? (
                                         <div>
-                                            <span className="font-medium text-gray-600">Email:</span>{" "}
-                                            {booking.responseData.order.customer_details.customer_email}
+                                            <span className="font-medium text-gray-600">Payment Method:</span>{" "}
+                                            {method.type} – {method.details}
                                         </div>
-                                        <div>
-                                            <span className="font-medium text-gray-600">Phone:</span>{" "}
-                                            {booking.responseData.order.customer_details.customer_phone}
-                                        </div>
-                                    </>
-                                )}
-
-                                {booking.responseData?.payments?.[0]?.payment_method?.card && (
-                                    <>
-                                        <div>
-                                            <span className="font-medium text-gray-600">Card:</span>{" "}
-                                            {booking.responseData.payments[0].payment_method.card.card_network.toUpperCase()} •{" "}
-                                            {booking.responseData.payments[0].payment_method.card.card_number}
-                                        </div>
-                                        <div>
-                                            <span className="font-medium text-gray-600">Bank:</span>{" "}
-                                            {booking.responseData.payments[0].payment_method.card.card_bank_name}
-                                        </div>
-                                    </>
-                                )}
+                                    ) : null;
+                                })()}
                             </div>
                         </div>
                     )}
