@@ -41,13 +41,12 @@ const PaymentSuccess = () => {
         if (method.upi) {
             return {
                 type: "UPI",
-                details: method.upi.upi_vpa || "UPI Payment"
+                details: method.upi.upi_id || "UPI Payment"
             };
         }
 
         return { type: "Unknown", details: "N/A" };
     };
-
 
     const verifyPayment = async () => {
         try {
@@ -58,12 +57,13 @@ const PaymentSuccess = () => {
             if (response.success && (response.status === "SUCCESS" || response.status === "PAID")) {
                 setBooking(response.payment);
             } else if (response.status === "FAILED" || response.status === "CANCELLED") {
-                setError("Your payment was cancelled or failed. Please try again.");
+                setBooking(response.payment); // capture failed details too
+                setError("FAILED");
             } else {
-                setError("Payment is still pending. Please check again later.");
+                setError("PENDING");
             }
         } catch {
-            setError("Failed to verify payment");
+            setError("ERROR");
         } finally {
             setLoading(false);
         }
@@ -80,7 +80,13 @@ const PaymentSuccess = () => {
         );
     }
 
-    if (error) {
+    // === Failed or Cancelled UI ===
+    if (error === "FAILED") {
+        const method = getPaymentMethodDetails(booking);
+        const failureReason = booking?.failureReason ||
+            booking?.responseData?.payments?.[0]?.error_details?.error_description ||
+            "Your payment failed. Please try again.";
+
         return (
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
                 <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-4">
@@ -90,13 +96,33 @@ const PaymentSuccess = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-2">Payment Error</h2>
-                        <p className="text-gray-600 mb-6">{error}</p>
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-2">Payment Failed</h2>
+                        <p className="text-gray-600 mb-6">{failureReason}</p>
+
+                        {booking && (
+                            <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                                <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
+                                <div className="space-y-2 text-sm">
+                                    <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
+                                    <div><span className="font-medium text-gray-600">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
+                                    <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
+                                    <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
+                                    <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
+                                    {method && (
+                                        <div>
+                                            <span className="font-medium text-gray-600">Payment Method:</span>{" "}
+                                            {method.type} – {method.details}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <button
                             onClick={() => window.location.href = '/'}
                             className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
                         >
-                            Back to Booking
+                            Try Again
                         </button>
                     </div>
                 </div>
@@ -104,6 +130,42 @@ const PaymentSuccess = () => {
         );
     }
 
+    // === Pending UI ===
+    if (error === "PENDING") {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-yellow-50">
+                <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Payment Pending</h2>
+                    <p className="text-gray-600 mb-6">Your payment is still being processed. Please check again later.</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                    >
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (error === "ERROR") {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-red-50">
+                <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Verification Failed</h2>
+                    <p className="text-gray-600 mb-6">Unable to verify payment at the moment. Please try again later.</p>
+                    <button
+                        onClick={() => window.location.href = '/'}
+                        className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                    >
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // === Success UI ===
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
             <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-4">
@@ -120,26 +182,11 @@ const PaymentSuccess = () => {
                         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                             <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
                             <div className="space-y-2 text-sm">
-                                <div>
-                                    <span className="font-medium text-gray-600">Package:</span> {booking.packageType}
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-600">Course:</span>{" "}
-                                    {booking.courses && booking.courses.length > 0
-                                        ? booking.courses[0].courseTitle
-                                        : "N/A"}
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-600">Transaction ID:</span>{" "}
-                                    {booking.transactionId}
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}
-                                </div>
-
+                                <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
+                                <div><span className="font-medium text-gray-600">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
+                                <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
+                                <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
+                                <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
                                 {(() => {
                                     const method = getPaymentMethodDetails(booking);
                                     return method ? (
