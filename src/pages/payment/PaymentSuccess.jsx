@@ -103,14 +103,14 @@ const PaymentSuccess = () => {
                             <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                                 <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
                                 <div className="space-y-2 text-sm">
-                                    <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
-                                    <div><span className="font-medium text-gray-600">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
-                                    <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
-                                    <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
-                                    <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
+                                    <div><span className="font-bold">Package:</span> {booking.packageType}</div>
+                                    <div><span className="font-bold">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
+                                    <div><span className="font-bold">Order ID:</span> {booking.orderId}</div>
+                                    <div><span className="font-bold">Transaction ID:</span> {booking.transactionId}</div>
+                                    <div><span className="font-bold">Amount:</span> ₹{booking.amount} {booking.currency}</div>
                                     {method && (
                                         <div>
-                                            <span className="font-medium text-gray-600">Payment Method:</span>{" "}
+                                            <span className="font-bold">Payment Method:</span>{" "}
                                             {method.type} – {method.details}
                                         </div>
                                     )}
@@ -182,9 +182,9 @@ const PaymentSuccess = () => {
                         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                             <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
                             <div className="space-y-2 text-sm">
-                                <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
+                                <div><span className="font-bold">Package:</span> {booking.packageType}</div>
                                 <div>
-                                    <span className="font-medium text-gray-600">Courses:</span>{" "}
+                                    <span className="font-bold">Courses:</span>{" "}
                                     {booking.courses?.map((course, index) => (
                                         <span key={index}>
                                             {course.courseTitle}
@@ -192,14 +192,14 @@ const PaymentSuccess = () => {
                                         </span>
                                     ))}
                                 </div>
-                                <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
-                                <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
-                                <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
+                                <div><span className="font-bold">Order ID:</span> {booking.orderId}</div>
+                                <div><span className="font-bold">Transaction ID:</span> {booking.transactionId}</div>
+                                <div><span className="font-bold">Amount:</span> ₹{booking.amount} {booking.currency}</div>
                                 {(() => {
                                     const method = getPaymentMethodDetails(booking);
                                     return method ? (
                                         <div>
-                                            <span className="font-medium text-gray-600">Payment Method:</span>{" "}
+                                            <span className="font-bold">Payment Method:</span>{" "}
                                             {method.type} – {method.details}
                                         </div>
                                     ) : null;
