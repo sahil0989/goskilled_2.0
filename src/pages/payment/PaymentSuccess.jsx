@@ -57,7 +57,7 @@ const PaymentSuccess = () => {
             if (response.success && (response.status === "SUCCESS" || response.status === "PAID")) {
                 setBooking(response.payment);
             } else if (response.status === "FAILED" || response.status === "CANCELLED") {
-                setBooking(response.payment); // capture failed details too
+                setBooking(response.payment); 
                 setError("FAILED");
             } else {
                 setError("PENDING");
@@ -176,7 +176,7 @@ const PaymentSuccess = () => {
                         </svg>
                     </div>
                     <h2 className="text-2xl font-semibold text-gray-800 mb-2">Payment Successful!</h2>
-                    <p className="text-gray-600 mb-6">Your consultation has been booked successfully.</p>
+                    <p className="text-gray-600 mb-6 text-xs">Your Course added to your Dashboard Successfully.</p>
 
                     {booking && (
                         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
@@ -205,11 +205,8 @@ const PaymentSuccess = () => {
                             onClick={() => window.location.href = '/'}
                             className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
                         >
-                            Book Another Consultation
+                            Explore your Course
                         </button>
-                        <p className="text-xs text-gray-400">
-                            You will receive a confirmation email shortly.
-                        </p>
                     </div>
                 </div>
             </div>
