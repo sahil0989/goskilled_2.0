@@ -104,7 +104,14 @@ const PaymentSuccess = () => {
                                 <h3 className="font-semibold text-gray-800 mb-5">Order Details</h3>
                                 <div className="space-y-3 text-sm">
                                     <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
-                                    <div><span className="font-medium text-gray-600">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
+                                    <div>
+                                        <span className="font-medium text-gray-600">Courses:</span>
+                                        <ul className="list-disc list-inside mt-1">
+                                            {booking.courses?.map((course, index) => (
+                                                <li key={index}>{course.courseTitle}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                     <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
                                     <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
                                     <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
@@ -184,13 +191,12 @@ const PaymentSuccess = () => {
                             <div className="space-y-2 text-sm">
                                 <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
                                 <div>
-                                    <span className="font-medium text-gray-600">Courses:</span>{" "}
-                                    {booking.courses?.map((course, index) => (
-                                        <span key={index}>
-                                            {course.courseTitle}
-                                            {index < booking.courses.length - 1 ? ", " : ""}
-                                        </span>
-                                    ))}
+                                    <span className="font-medium text-gray-600">Courses:</span>
+                                    <ul className="list-disc list-inside mt-1">
+                                        {booking.courses?.map((course, index) => (
+                                            <li key={index}>{course.courseTitle}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                                 <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
                                 <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
