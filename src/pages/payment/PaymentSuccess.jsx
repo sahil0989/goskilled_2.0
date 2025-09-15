@@ -88,32 +88,53 @@ const PaymentSuccess = () => {
 
                     {booking && (
                         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-                            <h3 className="font-semibold text-gray-800 mb-3">Booking Details</h3>
+                            <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
                             <div className="space-y-2 text-sm">
                                 <div>
-                                    <span className="font-medium text-gray-600">Patient:</span> {booking.patientName}
+                                    <span className="font-medium text-gray-600">Package:</span> {booking.packageType}
                                 </div>
                                 <div>
-                                    <span className="font-medium text-gray-600">Date:</span> {new Date(booking.bookingDateTime).toLocaleDateString()}
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-600">Time:</span> {new Date(booking.bookingDateTime).toLocaleTimeString()}
+                                    <span className="font-medium text-gray-600">Course:</span>{" "}
+                                    {booking.courses && booking.courses.length > 0
+                                        ? booking.courses[0].courseTitle
+                                        : "N/A"}
                                 </div>
                                 <div>
                                     <span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}
                                 </div>
                                 <div>
-                                    <span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount}
+                                    <span className="font-medium text-gray-600">Transaction ID:</span>{" "}
+                                    {booking.transactionId}
                                 </div>
-                                {booking.paymentMethod && (
-                                    <div>
-                                        <span className="font-medium text-gray-600">Payment Method:</span> {booking.paymentMethod}
-                                    </div>
+                                <div>
+                                    <span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}
+                                </div>
+
+                                {booking.responseData?.order?.customer_details && (
+                                    <>
+                                        <div>
+                                            <span className="font-medium text-gray-600">Email:</span>{" "}
+                                            {booking.responseData.order.customer_details.customer_email}
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-gray-600">Phone:</span>{" "}
+                                            {booking.responseData.order.customer_details.customer_phone}
+                                        </div>
+                                    </>
                                 )}
-                                {booking.paymentId && (
-                                    <div>
-                                        <span className="font-medium text-gray-600">Payment ID:</span> {booking.paymentId}
-                                    </div>
+
+                                {booking.responseData?.payments?.[0]?.payment_method?.card && (
+                                    <>
+                                        <div>
+                                            <span className="font-medium text-gray-600">Card:</span>{" "}
+                                            {booking.responseData.payments[0].payment_method.card.card_network.toUpperCase()} •{" "}
+                                            {booking.responseData.payments[0].payment_method.card.card_number}
+                                        </div>
+                                        <div>
+                                            <span className="font-medium text-gray-600">Bank:</span>{" "}
+                                            {booking.responseData.payments[0].payment_method.card.card_bank_name}
+                                        </div>
+                                    </>
                                 )}
                             </div>
                         </div>
