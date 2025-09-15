@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../@/components/ui/card';
 import { BookCheckIcon, Lock, PlayCircle, ShieldCheck, VideoIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import PaymentModel from '../../components/PaymentModel';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../@/components/ui/button';
 import { Skeleton } from '../../@/components/ui/skeleton';
@@ -20,7 +19,6 @@ import { FaCertificate } from 'react-icons/fa';
 import Footer from '../../components/FooterSection';
 
 export default function StudentViewCourseDetailsPage() {
-    const [openModel, setOpenModel] = useState(false);
     const [enrolled, setEnrolled] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState('not_found');
     const [canPurchase, setCanPurchase] = useState(true);
@@ -136,7 +134,6 @@ export default function StudentViewCourseDetailsPage() {
 
             const response = await checkEnrolledCourse(userId);
             if (response?.enrolled) {
-                setOpenModel(true);
                 const result = await createPayment(data);
                 if (result.success) {
                     navigate('/payment', {
@@ -386,14 +383,6 @@ export default function StudentViewCourseDetailsPage() {
                     </aside>
                 </div>
             </div>
-
-            {openModel && (
-                <PaymentModel
-                    data={studentViewCourseDetails}
-                    price={studentViewCourseDetails?.pricing?.standard}
-                    setOpenModel={setOpenModel}
-                />
-            )}
 
             {showPreview && (
                 <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
