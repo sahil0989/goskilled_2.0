@@ -57,7 +57,7 @@ const PaymentSuccess = () => {
             if (response.success && (response.status === "SUCCESS" || response.status === "PAID")) {
                 setBooking(response.payment);
             } else if (response.status === "FAILED" || response.status === "CANCELLED") {
-                setBooking(response.payment); 
+                setBooking(response.payment);
                 setError("FAILED");
             } else {
                 setError("PENDING");
@@ -183,7 +183,15 @@ const PaymentSuccess = () => {
                             <h3 className="font-semibold text-gray-800 mb-3">Order Details</h3>
                             <div className="space-y-2 text-sm">
                                 <div><span className="font-medium text-gray-600">Package:</span> {booking.packageType}</div>
-                                <div><span className="font-medium text-gray-600">Course:</span> {booking.courses?.[0]?.courseTitle || "N/A"}</div>
+                                <div>
+                                    <span className="font-medium text-gray-600">Courses:</span>{" "}
+                                    {booking.courses?.map((course, index) => (
+                                        <span key={index}>
+                                            {course.courseTitle}
+                                            {index < booking.courses.length - 1 ? ", " : ""}
+                                        </span>
+                                    ))}
+                                </div>
                                 <div><span className="font-medium text-gray-600">Order ID:</span> {booking.orderId}</div>
                                 <div><span className="font-medium text-gray-600">Transaction ID:</span> {booking.transactionId}</div>
                                 <div><span className="font-medium text-gray-600">Amount:</span> ₹{booking.amount} {booking.currency}</div>
