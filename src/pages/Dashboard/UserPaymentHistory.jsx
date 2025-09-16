@@ -123,7 +123,7 @@ export default function UserPaymentHistory() {
                             <th className="px-4 py-2 border">Order ID</th>
                             <th className="px-4 py-2 border w-40">Date & Time</th>
                             <th className="px-4 py-2 border">Package</th>
-                            <th className="px-4 py-2 border w-72">Courses</th>
+                            <th className="px-4 py-2 border w-96">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
                             <th className="px-4 py-2 border">Status</th>
                             <th className="px-4 py-2 border w-96">Payment Method</th>
@@ -147,7 +147,7 @@ export default function UserPaymentHistory() {
                                             : new Date(p.createdAt).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm w-72">
+                                    <td className="px-4 py-2 border text-sm w-96">
                                         <ul className="list-disc list-inside mt-1">
                                             {p.courses?.map((course, index) => (
                                                 <li key={index}>{course.courseTitle}</li>
