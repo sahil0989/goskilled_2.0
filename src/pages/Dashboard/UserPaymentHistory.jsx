@@ -104,7 +104,7 @@ export default function UserPaymentHistory() {
                     type="text"
                     value={searchMobile}
                     onChange={(e) => setSearchMobile(e.target.value)}
-                    placeholder="Enter Mobile Number"
+                    placeholder="Enter orderId, TransactionId or Course Name"
                     className="border rounded-lg px-3 py-2 w-64"
                 />
                 <button
