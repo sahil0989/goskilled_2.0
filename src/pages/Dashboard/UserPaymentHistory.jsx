@@ -121,12 +121,12 @@ export default function UserPaymentHistory() {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-4 py-2 border">Order ID</th>
-                            <th className="px-4 py-2 border w-40">Date & Time</th>
+                            <th className="px-4 py-2 border w-[180px]">Date & Time</th>
                             <th className="px-4 py-2 border">Package</th>
-                            <th className="px-4 py-2 border w-96">Courses</th>
+                            <th className="px-4 py-2 border w-[280px]">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
                             <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border w-96">Payment Method</th>
+                            <th className="px-4 py-2 border w-[280px]">Payment Method</th>
                             <th className="px-4 py-2 border">Transaction ID</th>
                         </tr>
                     </thead>
@@ -141,31 +141,43 @@ export default function UserPaymentHistory() {
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
                                     <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm w-40">
+
+                                    {/* Fixed width for Date & Time */}
+                                    <td className="px-4 py-2 border text-sm w-[180px]">
                                         {p.responseData?.payments?.[0]?.payment_time
                                             ? new Date(p.responseData.payments[0].payment_time).toLocaleString()
                                             : new Date(p.createdAt).toLocaleString()}
                                     </td>
+
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm w-96">
+
+                                    {/* Fixed width for Courses */}
+                                    <td className="px-4 py-2 border text-sm w-[280px]">
                                         <ul className="list-disc list-inside mt-1">
                                             {p.courses?.map((course, index) => (
-                                                <li key={index}>{course.courseTitle}</li>
+                                                <li key={index} className="truncate">{course.courseTitle}</li>
                                             ))}
                                         </ul>
                                     </td>
+
                                     <td className="px-4 py-2 border text-sm">₹{p.amount ?? "N/A"}</td>
+
                                     <td
                                         className={`px-4 py-2 border font-semibold ${p.status === "success"
-                                            ? "text-green-600"
-                                            : p.status === "failed"
-                                                ? "text-red-600"
-                                                : "text-yellow-600"
+                                                ? "text-green-600"
+                                                : p.status === "failed"
+                                                    ? "text-red-600"
+                                                    : "text-yellow-600"
                                             }`}
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border text-sm w-96">{getPaymentMethod(p)}</td>
+
+                                    {/* Fixed width for Payment Method */}
+                                    <td className="px-4 py-2 border text-sm w-[280px]">
+                                        {getPaymentMethod(p)}
+                                    </td>
+
                                     <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
