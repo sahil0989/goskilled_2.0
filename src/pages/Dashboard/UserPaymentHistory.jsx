@@ -69,23 +69,22 @@ export default function UserPaymentHistory() {
                     <tbody>
                         {filteredPayments.length === 0 ? (
                             <tr>
-                                <td
-                                    colSpan="8"
-                                    className="text-center py-4 text-gray-500"
-                                >
+                                <td colSpan="8" className="text-center py-4 text-gray-500">
                                     No records found
                                 </td>
                             </tr>
                         ) : (
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2 border">{p.orderId}</td>
-                                    <td className="px-4 py-2 border">{p.mobileNumber}</td>
-                                    <td className="px-4 py-2 border">{p.packageType}</td>
+                                    <td className="px-4 py-2 border">{p.orderId || "N/A"}</td>
+                                    <td className="px-4 py-2 border">{p.mobileNumber || "N/A"}</td>
+                                    <td className="px-4 py-2 border">{p.packageType || "N/A"}</td>
                                     <td className="px-4 py-2 border">
-                                        {p.courses?.map((c) => c.name).join(", ")}
+                                        {Array.isArray(p.courses) && p.courses.length > 0
+                                            ? p.courses.map((c) => c.name || "N/A").join(", ")
+                                            : "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border">₹{p.amount}</td>
+                                    <td className="px-4 py-2 border">₹{p.amount ?? "N/A"}</td>
                                     <td
                                         className={`px-4 py-2 border font-semibold ${p.status === "success"
                                                 ? "text-green-600"
@@ -94,10 +93,14 @@ export default function UserPaymentHistory() {
                                                     : "text-yellow-600"
                                             }`}
                                     >
-                                        {p.status}
+                                        {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border">{p.paymentMethod}</td>
-                                    <td className="px-4 py-2 border">{p.transactionId}</td>
+                                    <td className="px-4 py-2 border">
+                                        {p.paymentMethod
+                                            ? `${p.paymentMethod.type || ""} | ${p.paymentMethod.network || ""} | ${p.paymentMethod.bank || ""} | ${p.paymentMethod.number || ""}`
+                                            : "N/A"}
+                                    </td>
+                                    <td className="px-4 py-2 border">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
                         )}
