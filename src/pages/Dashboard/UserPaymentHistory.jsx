@@ -100,28 +100,29 @@ export default function UserPaymentHistory() {
                         ) : (
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2 border">{p.orderId || "N/A"}</td>
-                                    <td className="px-4 py-2 border">{p.mobileNumber || "N/A"}</td>
-                                    <td className="px-4 py-2 border">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border">
-                                        {Array.isArray(p.courses) && p.courses.length > 0
-                                            ? p.courses.map((c) => c.courseTitle || c.name || "N/A").join(", ")
-                                            : "N/A"}
+                                    <td className="px-4 py-2 border text-xs">{p.orderId || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-xs">{p.mobileNumber || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-xs">{p.packageType || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-xs">
+                                        <ul className="list-disc list-inside mt-1">
+                                            {p.courses?.map((course, index) => (
+                                                <li key={index}>{course.courseTitle}</li>
+                                            ))}
+                                        </ul>
                                     </td>
-                                    <td className="px-4 py-2 border">₹{p.amount ?? "N/A"}</td>
+                                    <td className="px-4 py-2 border text-xs">₹{p.amount ?? "N/A"}</td>
                                     <td
-                                        className={`px-4 py-2 border font-semibold ${
-                                            p.status === "success"
+                                        className={`px-4 py-2 border font-semibold ${p.status === "success"
                                                 ? "text-green-600"
                                                 : p.status === "failed"
-                                                ? "text-red-600"
-                                                : "text-yellow-600"
-                                        }`}
+                                                    ? "text-red-600"
+                                                    : "text-yellow-600"
+                                            }`}
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border">{getPaymentMethod(p)}</td>
-                                    <td className="px-4 py-2 border">{p.transactionId || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-xs">{getPaymentMethod(p)}</td>
+                                    <td className="px-4 py-2 border text-xs">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
                         )}
