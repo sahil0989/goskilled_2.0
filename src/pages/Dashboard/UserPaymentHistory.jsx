@@ -121,6 +121,7 @@ export default function UserPaymentHistory() {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-4 py-2 border">Order ID</th>
+                            <th className="px-4 py-2 border">Date & Time</th>
                             <th className="px-4 py-2 border">Package</th>
                             <th className="px-4 py-2 border">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
@@ -140,6 +141,11 @@ export default function UserPaymentHistory() {
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
                                     <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">
+                                        {p.responseData?.payments?.[0]?.payment_time
+                                            ? new Date(p.responseData.payments[0].payment_time).toLocaleString()
+                                            : new Date(p.createdAt).toLocaleString()}
+                                    </td>
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
                                     <td className="px-4 py-2 border text-sm">
                                         <ul className="list-disc list-inside mt-1">
