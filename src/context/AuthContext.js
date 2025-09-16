@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { fetchLeaderboardData, getUserDetails } from "../api/ApiCall";
+import { fetchLeaderboardData, getUserDetails, getUserPayments } from "../api/ApiCall";
 import { toast } from "sonner";
 
 export const logoutHelper = () => {
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserPayments = async (id) => {
     try {
-      const data = await fetchingPayment(id);
+      const data = await getUserPayments(id);
 
       console.log("Payment Data: ", data);
     } catch(err) {
