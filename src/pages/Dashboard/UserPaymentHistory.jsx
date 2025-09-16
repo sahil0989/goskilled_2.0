@@ -28,35 +28,58 @@ export default function UserPaymentHistory() {
         }
     }, [searchMobile, payments]);
 
-    // Helper to get readable payment method
+    // Helper to get readable payment method in column format
     const getPaymentMethod = (p) => {
-        // If already structured
         if (p.paymentMethod && typeof p.paymentMethod === "object") {
             const { type, network, bank, number } = p.paymentMethod;
-            return `${type || ""} | ${network || ""} | ${bank || ""} | ${number || ""}`;
+            return (
+                <div className="flex flex-col text-xs">
+                    {type && <span>Type: {type}</span>}
+                    {network && <span>Network: {network}</span>}
+                    {bank && <span>Bank: {bank}</span>}
+                    {number && <span>Card No: {number}</span>}
+                </div>
+            );
         }
 
-        // If UNKNOWN, try fetching from responseData
         if (p.responseData?.payments?.length > 0) {
             const method = p.responseData.payments[0].payment_method;
+
             if (method.card) {
                 const c = method.card;
-                return `${c.card_type || ""} | ${c.card_network || ""} | ${c.card_bank_name || ""} | ${c.card_number || ""}`;
+                return (
+                    <div className="flex flex-col text-xs">
+                        {c.card_type && <span>Type: {c.card_type}</span>}
+                        {c.card_network && <span>Network: {c.card_network}</span>}
+                        {c.card_bank_name && <span>Bank: {c.card_bank_name}</span>}
+                        {c.card_number && <span>Card No: {c.card_number}</span>}
+                    </div>
+                );
             } else if (method.netbanking) {
                 const n = method.netbanking;
-                return `NETBANKING | ${n.netbanking_bank_name || ""} | ${n.netbanking_account_number || ""}`;
+                return (
+                    <div className="flex flex-col text-xs">
+                        <span>Type: Netbanking</span>
+                        {n.netbanking_bank_name && <span>Bank: {n.netbanking_bank_name}</span>}
+                        {n.netbanking_account_number && <span>Acc No: {n.netbanking_account_number}</span>}
+                    </div>
+                );
             } else if (method.upi) {
                 const u = method.upi;
-                return `UPI | ${u.upi_id || ""}`;
+                return (
+                    <div className="flex flex-col text-xs">
+                        <span>Type: UPI</span>
+                        {u.upi_id && <span>UPI ID: {u.upi_id}</span>}
+                    </div>
+                );
             }
         }
 
-        return "N/A";
+        return <span className="text-gray-400">N/A</span>;
     };
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Payment History</h2>
 
             {/* Filter Section */}
             <div className="flex gap-2 mb-6">
@@ -100,29 +123,29 @@ export default function UserPaymentHistory() {
                         ) : (
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2 border text-xs">{p.orderId || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-xs">{p.mobileNumber || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-xs">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-xs">
+                                    <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">{p.mobileNumber || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">
                                         <ul className="list-disc list-inside mt-1">
                                             {p.courses?.map((course, index) => (
                                                 <li key={index}>{course.courseTitle}</li>
                                             ))}
                                         </ul>
                                     </td>
-                                    <td className="px-4 py-2 border text-xs">₹{p.amount ?? "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">₹{p.amount ?? "N/A"}</td>
                                     <td
                                         className={`px-4 py-2 border font-semibold ${p.status === "success"
-                                                ? "text-green-600"
-                                                : p.status === "failed"
-                                                    ? "text-red-600"
-                                                    : "text-yellow-600"
+                                            ? "text-green-600"
+                                            : p.status === "failed"
+                                                ? "text-red-600"
+                                                : "text-yellow-600"
                                             }`}
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border text-xs">{getPaymentMethod(p)}</td>
-                                    <td className="px-4 py-2 border text-xs">{p.transactionId || "N/A"}</td>
+                                    <td className="px-4 py-2 border text-sm">{getPaymentMethod(p)}</td>
+                                    <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
                         )}
