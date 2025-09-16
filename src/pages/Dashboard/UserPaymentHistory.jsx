@@ -19,11 +19,29 @@ export default function UserPaymentHistory() {
         if (!searchMobile.trim()) {
             setFilteredPayments(payments);
         } else {
-            const filtered = payments.filter(
-                (p) =>
-                    p.mobileNumber &&
-                    p.mobileNumber.toString().includes(searchMobile.trim())
-            );
+            const search = searchMobile.trim().toLowerCase();
+
+            const filtered = payments.filter((p) => {
+
+                const orderIdMatch =
+                    p.orderId &&
+                    p.orderId.toString().toLowerCase().includes(search);
+
+                const transactionMatch =
+                    p.transactionId &&
+                    p.transactionId.toString().toLowerCase().includes(search);
+
+                const courseMatch =
+                    Array.isArray(p.courses) &&
+                    p.courses.some(
+                        (c) =>
+                            (c.courseTitle && c.courseTitle.toLowerCase().includes(search)) ||
+                            (c.name && c.name.toLowerCase().includes(search))
+                    );
+
+                return mobileMatch || orderIdMatch || transactionMatch || courseMatch;
+            });
+
             setFilteredPayments(filtered);
         }
     }, [searchMobile, payments]);
@@ -104,7 +122,6 @@ export default function UserPaymentHistory() {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-4 py-2 border">Order ID</th>
-                            <th className="px-4 py-2 border">Mobile</th>
                             <th className="px-4 py-2 border">Package</th>
                             <th className="px-4 py-2 border">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
@@ -124,7 +141,6 @@ export default function UserPaymentHistory() {
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
                                     <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm">{p.mobileNumber || "N/A"}</td>
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
                                     <td className="px-4 py-2 border text-sm">
                                         <ul className="list-disc list-inside mt-1">
