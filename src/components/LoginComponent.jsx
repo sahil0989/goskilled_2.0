@@ -65,7 +65,6 @@ const LoginComponent = () => {
       localStorage.setItem("token", data?.data?.token);
       setUser(data?.data?.user);
       login(data?.data?.user?._id);
-      console.log("User ID: ", data?.data?.user?._id);
       fetchUserPayments(data?.data?.user?._id);
       toast.success("Login Successfully!!");
       navigate("/dashboard");

@@ -62,7 +62,9 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserPayments = async (id) => {
     try {
-      console.log("Payment User Id: ", id)
+      const data = await fetchingPayment(id);
+
+      console.log("Payment Data: ", data);
     } catch(err) {
 
     }
