@@ -117,19 +117,20 @@ export default function UserPaymentHistory() {
 
             {/* Payment Table */}
             <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-200">
+                <table className="table-auto w-full border-collapse border">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="px-4 py-2 border">Order ID</th>
-                            <th className="px-4 py-2 border w-[180px]">Date & Time</th>
-                            <th className="px-4 py-2 border">Package</th>
-                            <th className="px-4 py-2 border w-[280px]">Courses</th>
-                            <th className="px-4 py-2 border">Amount</th>
-                            <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border w-[280px]">Payment Method</th>
-                            <th className="px-4 py-2 border">Transaction ID</th>
+                            <th className="px-4 py-2 border text-left">Order ID</th>
+                            <th className="px-4 py-2 border text-left">Date & Time</th>
+                            <th className="px-4 py-2 border text-left">Package</th>
+                            <th className="px-4 py-2 border text-left">Courses</th>
+                            <th className="px-4 py-2 border text-left">Amount</th>
+                            <th className="px-4 py-2 border text-left">Status</th>
+                            <th className="px-4 py-2 border text-left">Payment Method</th>
+                            <th className="px-4 py-2 border text-left">Transaction ID</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {filteredPayments.length === 0 ? (
                             <tr>
@@ -140,50 +141,75 @@ export default function UserPaymentHistory() {
                         ) : (
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
+                                    {/* Order ID */}
                                     <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
 
-                                    {/* Fixed width for Date & Time */}
-                                    <td className="px-4 py-2 border text-sm w-[180px]">
-                                        {p.responseData?.payments?.[0]?.payment_time
-                                            ? new Date(p.responseData.payments[0].payment_time).toLocaleString()
-                                            : new Date(p.createdAt).toLocaleString()}
+                                    {/* Date & Time (fixed width) */}
+                                    <td className="px-4 py-2 border text-sm">
+                                        <div className="w-[80px]">
+                                            {p.responseData?.payments?.[0]?.payment_time ? (
+                                                <>
+                                                    <div>{new Date(p.responseData.payments[0].payment_time).toLocaleDateString()}</div>
+                                                    <div>{new Date(p.responseData.payments[0].payment_time).toLocaleTimeString()}</div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div>{new Date(p.createdAt).toLocaleDateString()}</div>
+                                                    <div>{new Date(p.createdAt).toLocaleTimeString()}</div>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
 
-                                    <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
+                                    {/* Package */}
+                                    <td className="px-4 py-2 border text-sm">
+                                        <div className="w-[95px]">{p.packageType || "N/A"}</div>
+                                    </td>
 
-                                    {/* Fixed width for Courses */}
-                                    <td className="px-4 py-2 border text-sm w-[280px]">
-                                        <ul className="list-disc list-inside mt-1">
+                                    {/* Courses (multi-line wrap, fixed width) */}
+                                    <td className="px-4 py-2 border text-sm w-[250px]">
+                                        <ul className="list-disc list-inside mt-1 space-y-1">
                                             {p.courses?.map((course, index) => (
-                                                <li key={index} className="truncate">{course.courseTitle}</li>
+                                                <li
+                                                    key={index}
+                                                    className="whitespace-normal break-words text-sm w-[250px]"
+                                                >
+                                                    {course.courseTitle}
+                                                </li>
                                             ))}
                                         </ul>
                                     </td>
 
+                                    {/* Amount */}
                                     <td className="px-4 py-2 border text-sm">₹{p.amount ?? "N/A"}</td>
 
+                                    {/* Status with colors */}
                                     <td
                                         className={`px-4 py-2 border font-semibold ${p.status === "success"
-                                                ? "text-green-600"
-                                                : p.status === "failed"
-                                                    ? "text-red-600"
-                                                    : "text-yellow-600"
+                                            ? "text-green-600"
+                                            : p.status === "failed"
+                                                ? "text-red-600"
+                                                : "text-yellow-600"
                                             }`}
                                     >
                                         {p.status || "N/A"}
                                     </td>
 
-                                    {/* Fixed width for Payment Method */}
-                                    <td className="px-4 py-2 border text-sm w-[280px]">
-                                        {getPaymentMethod(p)}
+                                    {/* Payment Method (multi-line wrap, fixed width) */}
+                                    <td className="px-4 py-2 border text-sm w-[180px] whitespace-normal break-words">
+                                        <div className="flex flex-col items-start space-y-1 w-[180px]">
+                                            {getPaymentMethod(p)}
+                                        </div>
                                     </td>
 
+                                    {/* Transaction ID */}
                                     <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
+
             </div>
         </div>
     );
