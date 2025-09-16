@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
-export default function PaymentHistory() {
+export default function UserPaymentHistory() {
     const [payments, setPayments] = useState([]);
     const [searchMobile, setSearchMobile] = useState("");
     const [filteredPayments, setFilteredPayments] = useState([]);

@@ -27,6 +27,7 @@ import {
   CreditCard,
   HistoryIcon,
 } from 'lucide-react';
+import UserPaymentHistory from './UserPaymentHistory';
 
 const UserDashboard = () => {
 
@@ -143,7 +144,7 @@ const UserDashboard = () => {
     { name: 'Referrals', icon: Users },
     { name: 'Wallet', icon: Wallet },
     { name: 'Leaderboard', icon: BarChart },
-    { name: 'Payment History', icon: HistoryIcon},
+    { name: 'Payment History', icon: HistoryIcon },
     { name: 'Our Meetings', icon: CalendarDays },
     { name: 'FAQ', icon: HelpCircle },
     { name: 'Commision Structure', icon: CreditCard },
@@ -166,8 +167,8 @@ const UserDashboard = () => {
                     <button
                       onClick={() => setActiveTab(item.name)}
                       className={`w-full flex items-center gap-3 px-4 py-2 rounded-md ${activeTab === item.name
-                          ? 'bg-[#1a4d10]/90 text-white'
-                          : 'hover:bg-[#1a4d10] hover:text-white'
+                        ? 'bg-[#1a4d10]/90 text-white'
+                        : 'hover:bg-[#1a4d10] hover:text-white'
                         }`}
                     >
                       <Icon size={18} />
@@ -191,7 +192,7 @@ const UserDashboard = () => {
         <nav className="flex-1 px-4 py-2 mt-8 md:mt-0">
           <ul className="space-y-2">
             {menuItems?.map((item) => {
-              const Icon = item.icon; 
+              const Icon = item.icon;
               return (
                 <li key={item?.name} className="text-sm">
                   <button
@@ -234,6 +235,8 @@ const UserDashboard = () => {
             earningHistory={earningHistory}
           />
         )}
+
+        {activeTab === "" && (<UserPaymentHistory />)}
 
         {activeTab === 'Referrals' && (<UserReferrals referrals={referredUser?.referrals} username={user?.name} />)}
 
