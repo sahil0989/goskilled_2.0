@@ -29,7 +29,7 @@ const LoginComponent = () => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
-  const { login, setUser } = useAuth();
+  const { login, setUser, fetchUserPayments } = useAuth();
 
   useEffect(() => {
     return () => {
@@ -65,6 +65,7 @@ const LoginComponent = () => {
       localStorage.setItem("token", data?.data?.token);
       setUser(data?.data?.user);
       login(data?.data?.user?._id);
+      fetchUserPayments(data?.data?.user?._id);
       toast.success("Login Successfully!!");
       navigate("/dashboard");
     } catch (error) {
