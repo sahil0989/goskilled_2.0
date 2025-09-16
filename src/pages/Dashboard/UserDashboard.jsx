@@ -236,7 +236,7 @@ const UserDashboard = () => {
           />
         )}
 
-        {activeTab === "" && (<UserPaymentHistory />)}
+        {activeTab === "Payment History" && (<UserPaymentHistory />)}
 
         {activeTab === 'Referrals' && (<UserReferrals referrals={referredUser?.referrals} username={user?.name} />)}
 
