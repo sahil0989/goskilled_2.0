@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
     if (response?.success) {
       setUser(response.data.user);
       await getLeaderboard();
+      await fetchUserPayments(response.data.user._id);
     } else {
       const wasManual = sessionStorage.getItem("manualLogout") === "true";
       if (!wasManual) {
@@ -59,6 +60,13 @@ export const AuthProvider = ({ children }) => {
     setAuthLoading(false);
   };
 
+  const fetchUserPayments = async (id) => {
+    try {
+      console.log("Payment User Id: ", id)
+    } catch(err) {
+
+    }
+  }
 
   const getLeaderboard = async () => {
     const data = await fetchLeaderboardData();
