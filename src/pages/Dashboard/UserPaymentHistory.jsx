@@ -126,7 +126,7 @@ export default function UserPaymentHistory() {
                             <th className="px-4 py-2 border w-72">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
                             <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border w-80">Payment Method</th>
+                            <th className="px-4 py-2 border w-96">Payment Method</th>
                             <th className="px-4 py-2 border">Transaction ID</th>
                         </tr>
                     </thead>
@@ -165,7 +165,7 @@ export default function UserPaymentHistory() {
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border text-sm w-80">{getPaymentMethod(p)}</td>
+                                    <td className="px-4 py-2 border text-sm w-96">{getPaymentMethod(p)}</td>
                                     <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
