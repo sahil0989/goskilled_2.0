@@ -25,6 +25,7 @@ import {
   CalendarDays,
   HelpCircle,
   CreditCard,
+  HistoryIcon,
 } from 'lucide-react';
 
 const UserDashboard = () => {
@@ -142,6 +143,7 @@ const UserDashboard = () => {
     { name: 'Referrals', icon: Users },
     { name: 'Wallet', icon: Wallet },
     { name: 'Leaderboard', icon: BarChart },
+    { name: 'Payment History', icon: HistoryIcon},
     { name: 'Our Meetings', icon: CalendarDays },
     { name: 'FAQ', icon: HelpCircle },
     { name: 'Commision Structure', icon: CreditCard },
