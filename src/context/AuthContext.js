@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userDashboardSidebar, setUserDashboardSidebar] = useState(false);
   const [referrals, setReferrals] = useState(null);
+  const [userPayments, setUserPayments] = useState([]);
   const [authLoading, setAuthLoading] = useState(false);
   const [leaderboard, setLeaderboard] = useState([]);
 
@@ -64,8 +65,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await getUserPayments(id);
 
-      console.log("Payment Data: ", data);
-    } catch(err) {
+      if (data.success) {
+        setUserPayments(data.payments);
+        console.log(data.payments);
+      }
+    } catch (err) {
 
     }
   }
