@@ -10,11 +10,9 @@ export default function UserPaymentHistory() {
 
     // Load payments from AuthContext
     useEffect(() => {
-        console.log("userPayments in PaymentHistory:", userPayments);
         setPayments(userPayments || []);
         setFilteredPayments(userPayments || []);
     }, [userPayments]);
-
 
     // Live filter when typing
     useEffect(() => {
@@ -29,6 +27,32 @@ export default function UserPaymentHistory() {
             setFilteredPayments(filtered);
         }
     }, [searchMobile, payments]);
+
+    // Helper to get readable payment method
+    const getPaymentMethod = (p) => {
+        // If already structured
+        if (p.paymentMethod && typeof p.paymentMethod === "object") {
+            const { type, network, bank, number } = p.paymentMethod;
+            return `${type || ""} | ${network || ""} | ${bank || ""} | ${number || ""}`;
+        }
+
+        // If UNKNOWN, try fetching from responseData
+        if (p.responseData?.payments?.length > 0) {
+            const method = p.responseData.payments[0].payment_method;
+            if (method.card) {
+                const c = method.card;
+                return `${c.card_type || ""} | ${c.card_network || ""} | ${c.card_bank_name || ""} | ${c.card_number || ""}`;
+            } else if (method.netbanking) {
+                const n = method.netbanking;
+                return `NETBANKING | ${n.netbanking_bank_name || ""} | ${n.netbanking_account_number || ""}`;
+            } else if (method.upi) {
+                const u = method.upi;
+                return `UPI | ${u.upi_id || ""}`;
+            }
+        }
+
+        return "N/A";
+    };
 
     return (
         <div className="p-6">
@@ -81,25 +105,22 @@ export default function UserPaymentHistory() {
                                     <td className="px-4 py-2 border">{p.packageType || "N/A"}</td>
                                     <td className="px-4 py-2 border">
                                         {Array.isArray(p.courses) && p.courses.length > 0
-                                            ? p.courses.map((c) => c.name || "N/A").join(", ")
+                                            ? p.courses.map((c) => c.courseTitle || c.name || "N/A").join(", ")
                                             : "N/A"}
                                     </td>
                                     <td className="px-4 py-2 border">₹{p.amount ?? "N/A"}</td>
                                     <td
-                                        className={`px-4 py-2 border font-semibold ${p.status === "success"
+                                        className={`px-4 py-2 border font-semibold ${
+                                            p.status === "success"
                                                 ? "text-green-600"
                                                 : p.status === "failed"
-                                                    ? "text-red-600"
-                                                    : "text-yellow-600"
-                                            }`}
+                                                ? "text-red-600"
+                                                : "text-yellow-600"
+                                        }`}
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border">
-                                        {p.paymentMethod
-                                            ? `${p.paymentMethod.type || ""} | ${p.paymentMethod.network || ""} | ${p.paymentMethod.bank || ""} | ${p.paymentMethod.number || ""}`
-                                            : "N/A"}
-                                    </td>
+                                    <td className="px-4 py-2 border">{getPaymentMethod(p)}</td>
                                     <td className="px-4 py-2 border">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
