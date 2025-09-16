@@ -121,12 +121,12 @@ export default function UserPaymentHistory() {
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-4 py-2 border">Order ID</th>
-                            <th className="px-4 py-2 border">Date & Time</th>
+                            <th className="px-4 py-2 border w-40">Date & Time</th>
                             <th className="px-4 py-2 border">Package</th>
-                            <th className="px-4 py-2 border w-64">Courses</th>
+                            <th className="px-4 py-2 border w-72">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
                             <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border w-64">Payment Method</th>
+                            <th className="px-4 py-2 border w-80">Payment Method</th>
                             <th className="px-4 py-2 border">Transaction ID</th>
                         </tr>
                     </thead>
@@ -141,13 +141,13 @@ export default function UserPaymentHistory() {
                             filteredPayments.map((p) => (
                                 <tr key={p.orderId} className="hover:bg-gray-50">
                                     <td className="px-4 py-2 border text-sm">{p.orderId || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm">
+                                    <td className="px-4 py-2 border text-sm w-40">
                                         {p.responseData?.payments?.[0]?.payment_time
                                             ? new Date(p.responseData.payments[0].payment_time).toLocaleString()
                                             : new Date(p.createdAt).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm w-64">
+                                    <td className="px-4 py-2 border text-sm w-72">
                                         <ul className="list-disc list-inside mt-1">
                                             {p.courses?.map((course, index) => (
                                                 <li key={index}>{course.courseTitle}</li>
@@ -165,7 +165,7 @@ export default function UserPaymentHistory() {
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border text-sm w-64">{getPaymentMethod(p)}</td>
+                                    <td className="px-4 py-2 border text-sm w-80">{getPaymentMethod(p)}</td>
                                     <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
