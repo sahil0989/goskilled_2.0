@@ -123,10 +123,10 @@ export default function UserPaymentHistory() {
                             <th className="px-4 py-2 border">Order ID</th>
                             <th className="px-4 py-2 border">Date & Time</th>
                             <th className="px-4 py-2 border">Package</th>
-                            <th className="px-4 py-2 border w-56">Courses</th>
+                            <th className="px-4 py-2 border w-64">Courses</th>
                             <th className="px-4 py-2 border">Amount</th>
                             <th className="px-4 py-2 border">Status</th>
-                            <th className="px-4 py-2 border">Payment Method</th>
+                            <th className="px-4 py-2 border w-64">Payment Method</th>
                             <th className="px-4 py-2 border">Transaction ID</th>
                         </tr>
                     </thead>
@@ -147,7 +147,7 @@ export default function UserPaymentHistory() {
                                             : new Date(p.createdAt).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-2 border text-sm">{p.packageType || "N/A"}</td>
-                                    <td className="px-4 py-2 border text-sm w-56">
+                                    <td className="px-4 py-2 border text-sm w-64">
                                         <ul className="list-disc list-inside mt-1">
                                             {p.courses?.map((course, index) => (
                                                 <li key={index}>{course.courseTitle}</li>
@@ -165,7 +165,7 @@ export default function UserPaymentHistory() {
                                     >
                                         {p.status || "N/A"}
                                     </td>
-                                    <td className="px-4 py-2 border text-sm">{getPaymentMethod(p)}</td>
+                                    <td className="px-4 py-2 border text-sm w-64">{getPaymentMethod(p)}</td>
                                     <td className="px-4 py-2 border text-sm">{p.transactionId || "N/A"}</td>
                                 </tr>
                             ))
