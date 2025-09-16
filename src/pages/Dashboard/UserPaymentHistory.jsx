@@ -22,7 +22,6 @@ export default function UserPaymentHistory() {
             const search = searchMobile.trim().toLowerCase();
 
             const filtered = payments.filter((p) => {
-
                 const orderIdMatch =
                     p.orderId &&
                     p.orderId.toString().toLowerCase().includes(search);
@@ -39,7 +38,7 @@ export default function UserPaymentHistory() {
                             (c.name && c.name.toLowerCase().includes(search))
                     );
 
-                return mobileMatch || orderIdMatch || transactionMatch || courseMatch;
+                return orderIdMatch || transactionMatch || courseMatch;
             });
 
             setFilteredPayments(filtered);
