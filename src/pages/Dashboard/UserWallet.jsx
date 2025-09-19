@@ -224,10 +224,7 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem, earningDetails,
                                             <td className="p-3 whitespace-nowrap">{index + 1}</td>
                                             <td className="p-3 whitespace-nowrap">₹ {entry?.amount}</td>
                                             <td className="p-3 whitespace-nowrap">
-                                                {{
-                                                    skill: 'Skill Builder',
-                                                    career: 'Career Booster'
-                                                }[entry?.courseType] || '—'}
+                                                {entry?.courseType}
                                             </td>
                                             <td className="p-3 whitespace-nowrap">
                                                 {new Date(entry.purchasedDate).toLocaleString()}
