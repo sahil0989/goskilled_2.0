@@ -229,7 +229,7 @@ function UserWallet({ user, wallet, redeemHistory, handleRedeem, earningDetails,
                                             <td className="p-3 whitespace-nowrap">
                                                 {new Date(entry.purchasedDate).toLocaleString()}
                                             </td>
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td className="p-3 whitespace-nowrap capitalize">
                                                 {entry?.referredUser?.name}
                                             </td>
                                         </tr>
