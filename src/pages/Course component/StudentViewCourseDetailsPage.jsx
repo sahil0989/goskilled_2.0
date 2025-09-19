@@ -40,7 +40,7 @@ export default function StudentViewCourseDetailsPage() {
         setLoadingState,
     } = useStudent();
 
-    // Check login and payment status
+    // Check login and payment status 
     useEffect(() => {
         const checkUserPaymentStatus = async () => {
             if (!user?._id) return;
