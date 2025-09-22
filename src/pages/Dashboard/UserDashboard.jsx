@@ -160,8 +160,19 @@ const UserDashboard = () => {
 
   const Popup = () => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-2xl shadow-xl w-[90%] max-w-md relative">
+      <div className="bg-white p-3 rounded-xl shadow-xl w-[90%] max-w-lg relative">
+        
+        {/* Close Button */}
+        <button 
+          className="absolute top-3 right-3 text-gray-500 hover:text-black"
+          onClick={() => setShowPopup(false)}
+        >
+          <X size={20} />
+        </button>
+
+        
         <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"}/>
+      
       </div>
     </div>
   );
