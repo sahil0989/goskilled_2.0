@@ -65,11 +65,18 @@ const UserDashboard = () => {
     }
     handleLogin()
 
-    // 👉 open popup on first mount
-    setShowPopup(true);
-
     // eslint-disable-next-line
   }, [user, navigate]);
+
+  useEffect(() => {
+    const hasSeenPopup = localStorage.getItem("hasSeenPopup");
+
+    if (!hasSeenPopup) {
+      setShowPopup(true);
+      localStorage.setItem("hasSeenPopup", "true");
+    }
+  }, []);
+
 
   //userWallet
   useEffect(() => {
@@ -161,18 +168,18 @@ const UserDashboard = () => {
   const Popup = () => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white p-3 pt-10 rounded-xl shadow-xl w-[90%] max-w-lg relative">
-        
+
         {/* Close Button */}
-        <button 
+        <button
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
           onClick={() => setShowPopup(false)}
         >
           <X size={20} />
         </button>
 
-        
-        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"} autoPlay={true}/>
-      
+
+        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"} autoPlay={true} />
+
       </div>
     </div>
   );
