@@ -171,7 +171,7 @@ const UserDashboard = () => {
         </button>
 
         
-        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"}/>
+        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"} autoPlay={true}/>
       
       </div>
     </div>

@@ -15,6 +15,7 @@ import {
 
 export default function VideoPlayer({
   url,
+  autoPlay,
   onProgressUpdate = () => { },
   progressData,
   className = "",
@@ -85,6 +86,10 @@ export default function VideoPlayer({
 
     if (screenfull.isEnabled) {
       screenfull.on('change', onFullScreenChange);
+    }
+
+    if(autoPlay) {
+      setIsPlaying(true)
     }
 
     return () => {
