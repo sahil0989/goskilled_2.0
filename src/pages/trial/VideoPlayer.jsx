@@ -88,7 +88,7 @@ export default function VideoPlayer({
       screenfull.on('change', onFullScreenChange);
     }
 
-    if(autoPlay) {
+    if (autoPlay) {
       setIsPlaying(true)
     }
 
@@ -105,6 +105,9 @@ export default function VideoPlayer({
     setSeeking(false);
     setIsPlaying(false);
     setShowOverlay(false);
+    if (autoPlay) {
+      setIsPlaying(true)
+    }
   }, [url]);
 
 
