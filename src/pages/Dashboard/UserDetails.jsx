@@ -227,13 +227,17 @@ export default function UserDetails({ user, setActiveTab, earningDetails }) {
           <div className='grid grid-cols-1 py-3 gap-3 text-white'>
             {['Level 1', 'Level 2', 'Level 3'].map((level, idx) => {
               const color = ['bg-pink-500', 'bg-purple-600', 'bg-blue-600'][idx]
-              const count = user?.referralLevels?.[`level${idx + 1}`]?.length || 0
+              const referralsReady = !!user?.referralLevels;
 
               return (
                 <div key={level} className={`w-full h-20 ${color} rounded-lg shadow-md px-8`}>
                   <div className='w-full h-full flex justify-between items-center'>
                     <h2 className='font-normal uppercase'>{level} Referrals</h2>
-                    {isLoading ? <div className={`${skeletonBox} h-6 w-8`}></div> : <h2 className='font-bold text-2xl'>{count ?? "0"}</h2>}
+                    {isLoading ? <div className={`${skeletonBox} h-6 w-8`}></div> : <h2 className="font-bold text-2xl">
+                      {referralsReady
+                        ? user.referralLevels[`level${idx + 1}`]?.length ?? 0
+                        : 0}
+                    </h2>}
                   </div>
                 </div>
               )
