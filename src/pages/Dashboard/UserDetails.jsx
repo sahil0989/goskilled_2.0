@@ -233,7 +233,7 @@ export default function UserDetails({ user, setActiveTab, earningDetails }) {
                 <div key={level} className={`w-full h-20 ${color} rounded-lg shadow-md px-8`}>
                   <div className='w-full h-full flex justify-between items-center'>
                     <h2 className='font-normal uppercase'>{level} Referrals</h2>
-                    {isLoading ? <div className={`${skeletonBox} h-6 w-8`}></div> : <h2 className='font-bold text-2xl'>{count}</h2>}
+                    {isLoading ? <div className={`${skeletonBox} h-6 w-8`}></div> : <h2 className='font-bold text-2xl'>{count ?? "0"}</h2>}
                   </div>
                 </div>
               )
