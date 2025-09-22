@@ -29,6 +29,7 @@ import {
   HistoryIcon,
 } from 'lucide-react';
 import UserPaymentHistory from './UserPaymentHistory';
+import VideoPlayer from '../trial/VideoPlayer';
 
 const UserDashboard = () => {
 
@@ -160,25 +161,7 @@ const UserDashboard = () => {
   const Popup = () => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-2xl shadow-xl w-[90%] max-w-md relative">
-        {/* Close button */}
-        <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-black"
-          onClick={() => setShowPopup(false)}
-        >
-          <X size={20} />
-        </button>
-
-        <h2 className="text-xl font-semibold mb-4">🎉 Welcome!</h2>
-        <p className="text-gray-600">
-          Glad to see you here. Explore your dashboard and check out the latest updates.
-        </p>
-
-        <button
-          className="mt-6 w-full bg-[#1a4d10] text-white py-2 rounded-lg hover:bg-[#14500d]"
-          onClick={() => setShowPopup(false)}
-        >
-          Got it!
-        </button>
+        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"}/>
       </div>
     </div>
   );
