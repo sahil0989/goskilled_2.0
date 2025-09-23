@@ -19,7 +19,6 @@ const PaymentSuccess = () => {
                 navigate("/auth/login");
                 return;
             }
-            await loadOffers(user);
         };
 
         handleLogin();
