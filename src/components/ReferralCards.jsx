@@ -33,7 +33,8 @@ const packages = [
 
 export default function ReferralCards() {
   return (
-    <div className="grid md:grid-cols-2 gap-6 p-6">
+    <div className="grid md:grid-cols-2 gap-6 p-6 
+                    max-h-[80vh] overflow-y-auto">
       {packages.map((pkg, idx) => (
         <div
           key={idx}
@@ -42,7 +43,9 @@ export default function ReferralCards() {
           {/* Title & Base Price */}
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-1">{pkg.title}</h2>
-            <p className="text-lg text-gray-700 font-semibold">{pkg.price} <span className="text-sm text-gray-500">(+GST)</span></p>
+            <p className="text-lg text-gray-700 font-semibold">
+              {pkg.price} <span className="text-sm text-gray-500">(+GST)</span>
+            </p>
           </div>
 
           {/* Pricing Rules */}
