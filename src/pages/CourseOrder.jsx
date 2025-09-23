@@ -132,9 +132,6 @@ const OfferPurchase = () => {
           <X size={20} />
         </button>
 
-
-        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"} autoPlay={true} />
-
       </div>
     </div>
   );
