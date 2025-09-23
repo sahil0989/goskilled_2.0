@@ -123,7 +123,7 @@ const OfferPurchase = () => {
 
   const Popup = () => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-3 pt-10 rounded-xl shadow-xl w-[90%] max-w-lg relative">
+      <div className="bg-white p-3 pt-10 rounded-xl shadow-xl w-[90%] max-w-2xl relative">
 
         {/* Close Button */}
         <button
