@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { verifyPaymentApi } from '../../api/ApiCall';
+import { useAuth } from '../../context/AuthContext';
 
 const PaymentSuccess = () => {
+    const { user } = useAuth();
     const [searchParams] = useSearchParams();
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
+    const navigate = useNavigate();
     const orderId = searchParams.get('order_id');
+
+    useEffect(() => {
+        const handleLogin = async () => {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            if (!storedUser && !user) {
+                navigate("/auth/login");
+                return;
+            }
+            await loadOffers(user);
+        };
+
+        handleLogin();
+        // eslint-disable-next-line
+    }, [user]);
 
     useEffect(() => {
         if (orderId) {
