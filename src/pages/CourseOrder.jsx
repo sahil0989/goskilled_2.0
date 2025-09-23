@@ -1,5 +1,6 @@
-import { useAuth } from "../context/AuthContext";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import PaymentModel from "../components/PaymentModel";
 import { checkEnrolledCourse, createPayment, fetchStudentViewCourseListService } from "../api/ApiCall";
@@ -16,6 +17,8 @@ const OfferPurchase = () => {
   const [courseType, setCourseType] = useState("skill");
   const [openModel, setOpenModel] = useState(false);
 
+  const [showPopup, setShowPopup] = useState(false)
+
   useEffect(() => {
     const handleLogin = async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -25,6 +28,8 @@ const OfferPurchase = () => {
       }
       await loadOffers(user);
     };
+
+    setShowPopup(true);
 
     handleLogin();
     // eslint-disable-next-line
@@ -115,9 +120,31 @@ const OfferPurchase = () => {
 
   if (loading) return null;
 
+  const Popup = () => (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white p-3 pt-10 rounded-xl shadow-xl w-[90%] max-w-lg relative">
+
+        {/* Close Button */}
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-black"
+          onClick={() => setShowPopup(false)}
+        >
+          <X size={20} />
+        </button>
+
+
+        <VideoPlayer className='w-full' url={"https://youtu.be/AKH6ZNSnWOA?si=vdQdBRoZj4L_rupk"} autoPlay={true} />
+
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div className="h-[calc(100vh-80px)] bg-gray-100 p-4">
+
+        {showPopup && <Popup />}
+
         <div className="grid md:grid-cols-2 gap-4 h-full overflow-hidden">
           {/* Left - Offer Selection */}
           <div className="bg-white py-3 px-3 rounded-2xl shadow overflow-y-auto hide-scrollbar">
