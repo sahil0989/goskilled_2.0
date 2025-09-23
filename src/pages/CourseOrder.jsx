@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import PaymentModel from "../components/PaymentModel";
 import { checkEnrolledCourse, createPayment, fetchStudentViewCourseListService } from "../api/ApiCall";
+import ReferralCards from "../components/ReferralCards";
 
 const GST_PERCENT = 0.18;
 
@@ -131,6 +132,8 @@ const OfferPurchase = () => {
         >
           <X size={20} />
         </button>
+
+        <ReferralCards />
 
       </div>
     </div>
