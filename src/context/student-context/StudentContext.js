@@ -5,6 +5,7 @@ const StudentContext = createContext(null);
 export const StudentProvider = ({ children }) => {
     const [studentViewCoursesList, setStudentViewCoursesList] = useState([]);
     const [loadingState, setLoadingState] = useState(true);
+    const [courseLoading, setCourseLoading] = useState(true);
     const [studentViewCourseDetails, setStudentViewCourseDetails] = useState(null);
     const [currentCourseDetailsId, setCurrentCourseDetailsId] = useState(null);
     const [studentBoughtCoursesList, setStudentBoughtCoursesList] = useState([]);
@@ -15,7 +16,7 @@ export const StudentProvider = ({ children }) => {
 
         if (response?.success) {
             setStudentViewCoursesList(response?.data);
-            console.log("Courses ", response?.data);
+            // setCourseLoading(false);
         }
     }
 
@@ -38,6 +39,7 @@ export const StudentProvider = ({ children }) => {
                 setStudentBoughtCoursesList,
                 studentCurrentCourseProgress,
                 setStudentCurrentCourseProgress,
+                courseLoading
             }}
         >
             {children}

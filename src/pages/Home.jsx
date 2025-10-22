@@ -17,10 +17,12 @@ import { useAuth } from '../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion';
 import { GiftIcon } from 'lucide-react'
 import Footer from '../components/FooterSection'
+import { useStudent } from '../context/student-context/StudentContext'
 
 export default function Home() {
 
     const { user } = useAuth();
+    const { courseLoading } = useStudent();
     const navigate = useNavigate()
 
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -30,10 +32,6 @@ export default function Home() {
             imgUrl: course1,
             title: "Digital Marketing Mastery – Master Online Growth & Sales",
             description: "Become a certified digital marketing expert & launch your career or business online.",
-        }, {
-            imgUrl: course2,
-            title: "Content Creation Mastery: Master Strategies to Grow Your Brand",
-            description: "Course designed to help you craft compelling content, build a strong online presence, and strategically grow your brand across digital platforms. Perfect for creators, entrepreneurs, and marketers ready to level up their influence."
         }
     ]
 
@@ -73,6 +71,10 @@ export default function Home() {
         return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+
+    }, [courseLoading])
 
     const handlebutton = () => {
         if (user) {
@@ -136,22 +138,26 @@ export default function Home() {
 
 
             {/* courses section  */}
-            <div className='bg-[#1A6E0A]/50 w-full py-16 px-12'>
-                <div className='flex flex-col md:flex-row items-center justify-around gap-10'>
-                    <div className='relative text-2xl md:text-5xl font-bold max-w-[300px]'>Most Popular Courses
-                        <div className='absolute -top-10 right-0'>
-                            <img src={element3} className='w-20 md:w-32' alt='' />
+            {
+                !courseLoading && <div>
+                    <div className='bg-[#1A6E0A]/50 w-full py-16 px-12'>
+                        <div className='flex flex-col md:flex-row items-center justify-around gap-10'>
+                            <div className='relative text-2xl md:text-5xl font-bold max-w-[300px]'>Most Popular Courses
+                                <div className='absolute -top-10 right-0'>
+                                    <img src={element3} className='w-20 md:w-32' alt='' />
+                                </div>
+                            </div>
+                            <div className='flex flex-col md:flex-row gap-10 md:gap-24'>
+                                {
+                                    courses.map((data, index) => {
+                                        return <CourseBlock key={index} data={data} />
+                                    })
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div className='flex flex-col md:flex-row gap-10 md:gap-24'>
-                        {
-                            courses.map((data, index) => {
-                                return <CourseBlock key={index} data={data} />
-                            })
-                        }
-                    </div>
                 </div>
-            </div>
+            }
 
             {/* why should you join us  */}
             <div className='flex flex-col md:flex-row items-center gap-5 py-16 bg-gradient-to-b from-[#1A6E0A]/50 to-white'>
