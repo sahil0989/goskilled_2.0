@@ -14,7 +14,8 @@ export const StudentProvider = ({ children }) => {
         const response = await fetchStudentViewCourseListService();
 
         if (response?.success) {
-            setStudentViewCoursesList(response?.data)
+            setStudentViewCoursesList(response?.data);
+            console.log("Courses ", response?.data);
         }
     }
 
