@@ -16,7 +16,7 @@ export const StudentProvider = ({ children }) => {
 
         if (response?.success) {
             setStudentViewCoursesList(response?.data);
-            // setCourseLoading(false);
+            setCourseLoading(false);
         }
     }
 
