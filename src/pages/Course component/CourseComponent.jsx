@@ -48,7 +48,7 @@ export default function CourseComponent({ data }) {
         onClick={() => !loading && handleNavigation()}
         role="button"
         tabIndex={0}
-        className={`group cursor-pointer border border-gray-300 rounded-2xl p-5 transition-all duration-300 hover:border-green-600 h-full flex flex-col
+        className={`group cursor-pointer border border-gray-300 rounded-2xl p-5 transition-all bg-white duration-300 hover:border-green-600 h-full flex flex-col
           ${loading ? 'opacity-70 pointer-events-none' : ''}
         `}
         onKeyDown={handleKeyDown}
@@ -68,13 +68,13 @@ export default function CourseComponent({ data }) {
         {/* Content */}
         <div className="flex flex-col flex-grow">
           <h4
-            className="text-gray-900 font-semibold leading-7 mb-2 line-clamp-2"
+            className="text-gray-900 font-semibold leading-6 mb-2 line-clamp-2"
             title={data.title}
           >
             {data.title}
           </h4>
           <p
-            className="text-gray-700 text-sm mb-4 line-clamp-3 flex-grow"
+            className="text-gray-700 text-sm mb-4 line-clamp-2 flex-grow"
             title={data.description}
           >
             {data.description}

@@ -18,22 +18,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GiftIcon } from 'lucide-react'
 import Footer from '../components/FooterSection'
 import { useStudent } from '../context/student-context/StudentContext'
+import CourseComponent from './Course component/CourseComponent'
 
 export default function Home() {
 
     const { user } = useAuth();
-    const { courseLoading } = useStudent();
+    const { courseLoading, studentViewCoursesList } = useStudent();
     const navigate = useNavigate()
 
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-    const courses = [
-        {
-            imgUrl: course1,
-            title: "Digital Marketing Mastery – Master Online Growth & Sales",
-            description: "Become a certified digital marketing expert & launch your career or business online.",
-        }
-    ]
+    const [courses, setCourses] = useState([]);
 
     const testimonials = [
         {
@@ -73,8 +68,12 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-
-    }, [courseLoading])
+        if (studentViewCoursesList && studentViewCoursesList.length > 0) {
+            const shuffled = [...studentViewCoursesList].sort(() => 0.5 - Math.random());
+            const randomTwo = shuffled.slice(0, 2);
+            setCourses(randomTwo);
+        }
+    }, [courseLoading, studentViewCoursesList]);
 
     const handlebutton = () => {
         if (user) {
@@ -147,10 +146,10 @@ export default function Home() {
                                     <img src={element3} className='w-20 md:w-32' alt='' />
                                 </div>
                             </div>
-                            <div className='flex flex-col md:flex-row gap-10 md:gap-24'>
+                            <div className='flex flex-col md:flex-row gap-10 md:gap-12'>
                                 {
                                     courses.map((data, index) => {
-                                        return <CourseBlock key={index} data={data} />
+                                        return <CourseComponent key={index} data={data} />
                                     })
                                 }
                             </div>
